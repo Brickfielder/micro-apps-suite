@@ -761,10 +761,12 @@
       }
     };
 
-    const matchesAmbulance = (input) => {
-      if (!input) return false;
+    const detectRequestedService = (input) => {
+      if (!input) return null;
       const lowered = input.toLowerCase();
-      if (lowered.includes('ambulance')) return true;
+      if (lowered.includes('ambulance')) return 'ambulance';
+      if (lowered.includes('police')) return 'police';
+      if (lowered.includes('fire')) return 'fire';
 
       const tokens = lowered
         .normalize('NFKD')
@@ -772,7 +774,11 @@
         .split(/\s+/)
         .filter(Boolean);
 
-      return tokens.some((token) => token.startsWith('ambulanc'));
+      if (tokens.some((token) => token.startsWith('ambulanc'))) return 'ambulance';
+      if (tokens.some((token) => token.startsWith('polic'))) return 'police';
+      if (tokens.some((token) => token.startsWith('fir'))) return 'fire';
+
+      return null;
     };
 
     const handleSpeechResult = (text, detail) => {
@@ -785,10 +791,10 @@
         .replace(/[^a-z\s]/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
-      const containsAmbulance = matchesAmbulance(sanitized) || matchesAmbulance(transcript);
+      const selectedService = detectRequestedService(sanitized) || detectRequestedService(transcript);
       const confidence = detail && typeof detail.confidence === 'number' ? detail.confidence : null;
 
-      if (!containsAmbulance) {
+      if (!selectedService) {
         addEvent('speech_rejected_no_match', { transcript, sanitized, confidence });
         return;
       }
@@ -798,7 +804,13 @@
         return;
       }
 
-      addEvent('speech_detected', { transcript, sanitized, confidence });
+      if (selectedService !== 'ambulance') {
+        addEvent('task_complete', { method: 'speech', selectedService, success: false });
+        finalizeFailure(`Incorrect service selected (${selectedService})`);
+        return;
+      }
+
+      addEvent('speech_detected', { transcript, sanitized, confidence, selectedService });
       recognitionSuccess = true;
       addEvent('task_complete', { method: 'speech' });
       finalizeSuccess();
@@ -1019,11 +1031,15 @@
     if (fallbackSubmit) {
       fallbackSubmit.addEventListener('click', () => {
         const value = (fallbackInput.value || '').trim().toLowerCase();
-        addEvent('fallback_submitted', { value });
-        if (value === 'ambulance') {
+        const selectedService = detectRequestedService(value);
+        addEvent('fallback_submitted', { value, selectedService });
+        if (selectedService === 'ambulance') {
           recognitionSuccess = true;
           addEvent('task_complete', { method: 'fallback_input' });
           finalizeSuccess();
+        } else if (selectedService) {
+          addEvent('task_complete', { method: 'fallback_input', selectedService, success: false });
+          finalizeFailure(`Incorrect service selected (${selectedService})`);
         } else {
           showPromptBanner('Please enter the word "Ambulance" to continue.');
         }
