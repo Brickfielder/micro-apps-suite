@@ -1,6 +1,6 @@
 # Removed Apps Audit
 
-The consolidated suite intentionally retains only eight apps. The following source apps were removed from the active manifest and app tree before the old repositories are retired.
+The consolidated suite intentionally retains only seven apps. The following source apps were removed from the active manifest and app tree before the old repositories are retired.
 
 ## Removed from `Brickfielder/micro-apps`
 
@@ -25,6 +25,7 @@ The original `emotion-chat`, `freshmarket-budget`, and `neglect-reader` folders 
 - `errands-visual-memory`
 - `fluency-coach`
 - `market-manager`
+- `memory-in-action`
 - `maze-explorer`
 - `office-day`
 - `plan-with-coco`
@@ -38,4 +39,4 @@ The original `emotion-chat`, `freshmarket-budget`, and `neglect-reader` folders 
 - `visuospatial-blocks`
 - `word-scavenger`
 
-The repository versions of `emotion-chat`, `memory-in-action`, `mobile-banking-simulator`, and `visual-neglect-trainer` were used as sources for retained apps.
+The repository versions of `emotion-chat`, `mobile-banking-simulator`, and `visual-neglect-trainer` were used as sources for retained apps. `memory-in-action` was initially imported during consolidation and then removed from the active suite.

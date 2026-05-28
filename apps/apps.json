@@ -72,18 +72,6 @@
     "thumbnail": "./assets/images/thumbnails/app-placeholder.svg"
   },
   {
-    "slug": "memory-in-action",
-    "title": "Memory in Action",
-    "description": "Watch a brief chat, complete a distractor, then answer recall questions.",
-    "tags": ["memory", "executive"],
-    "entryPath": "./apps/memory-in-action/index.html",
-    "version": "1.0.0",
-    "offlineCapable": true,
-    "lastUpdated": "2026-05-28",
-    "status": "Stable",
-    "thumbnail": "./assets/images/thumbnails/app-placeholder.svg"
-  },
-  {
     "slug": "brightwave-mobile-banking",
     "title": "Brightwave Mobile Banking Simulator",
     "description": "Practice balances, transfers, bills, card controls, and statement exports.",

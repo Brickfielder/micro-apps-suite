@@ -10,18 +10,48 @@
 </head>
 <body>
   <main id="app-root" class="suite-app">
-    <details class="instructions" open>
-          <summary data-i18n="instructions.summaryTitle"></summary>
-          <p style="margin:.5rem 0 0;" data-i18n="instructions.summaryBody1"></p>
-          <p style="margin:.5rem 0 0;" data-i18n="instructions.summaryBody2"></p>
-        </details>
-    
+    <section id="introScreen" class="bank-stage intro-screen" aria-labelledby="introTitle">
+      <div class="intro-panel">
+        <div class="intro-copy">
+          <div class="brand-lockup" aria-hidden="true">
+            <span class="brand-mark">Bw</span>
+            <span>Brightwave</span>
+          </div>
+          <h1 id="introTitle" data-i18n="instructions.title"></h1>
+          <p class="intro-lead" data-i18n="instructions.lead"></p>
+          <div class="scenario-note">
+            <strong data-i18n="instructions.scenarioTitle"></strong>
+            <span data-i18n="instructions.scenarioBody"></span>
+          </div>
+          <button id="startPracticeBtn" class="button primary start-button" type="button" data-i18n="instructions.start"></button>
+        </div>
+
+        <div class="intro-task-panel" aria-label="Practice overview">
+          <h2 data-i18n="instructions.tasksTitle"></h2>
+          <ol class="intro-task-list">
+            <li data-i18n="instructions.tasks.review"></li>
+            <li data-i18n="instructions.tasks.statement"></li>
+            <li data-i18n="instructions.tasks.transfer"></li>
+            <li data-i18n="instructions.tasks.payments"></li>
+            <li data-i18n="instructions.tasks.cards"></li>
+          </ol>
+          <p data-i18n="instructions.support"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="practiceScreen" class="bank-stage practice-screen hidden" aria-label="Brightwave practice workspace">
         <div class="control-bar" data-i18n="toolbar.controlBarAria" data-i18n-attr="aria-label">
+          <div class="workspace-title">
+            <strong data-i18n="toolbar.workspaceTitle"></strong>
+            <span data-i18n="toolbar.workspaceHint"></span>
+          </div>
           <div class="view-toggle" role="group" data-i18n="toolbar.viewToggleAria" data-i18n-attr="aria-label">
             <button type="button" class="active" data-view="phone" aria-pressed="true" data-i18n="toolbar.phone"></button>
             <button type="button" data-view="tablet" aria-pressed="false" data-i18n="toolbar.tablet"></button>
           </div>
           <div class="quick-status" id="availabilityStatus" aria-live="polite"></div>
+          <button id="backToInstructionsBtn" class="button secondary" type="button" data-i18n="toolbar.instructions"></button>
         </div>
     
         <div class="layout">
@@ -36,11 +66,23 @@
               </div>
     
               <header class="app-header">
-                <h1><span>Bw</span><span data-i18n="header.brand"></span></h1>
-                <div class="quick-status">
+                <h1><span class="brand-mark">Bw</span><span class="brand-name" data-i18n="header.brand"></span></h1>
+                <div class="header-status">
+                  <span class="secure-chip" data-i18n="header.secure"></span>
                   <span id="cardStatusLabel" data-i18n="status.cardUnlocked"></span>
                 </div>
               </header>
+
+              <section class="bank-overview" aria-label="Account overview">
+                <div>
+                  <span data-i18n="header.greeting"></span>
+                  <strong id="availableBalanceLabel"></strong>
+                </div>
+                <div class="overview-meta">
+                  <span data-i18n="header.available"></span>
+                  <span data-i18n="header.protected"></span>
+                </div>
+              </section>
     
               <nav class="tab-nav" data-i18n="navigation.aria" data-i18n-attr="aria-label">
                 <button type="button" class="active" data-tab="accounts" aria-pressed="true">
@@ -59,6 +101,13 @@
     
               <div class="app-body">
                 <section class="tab-panel active" id="tab-accounts" data-i18n="panels.accounts" data-i18n-attr="aria-label">
+                  <div class="panel-heading">
+                    <div>
+                      <h2 data-i18n="accounts.overviewTitle"></h2>
+                      <p data-i18n="accounts.overviewHelper"></p>
+                    </div>
+                    <span data-i18n="accounts.badge"></span>
+                  </div>
                   <div class="cards-grid cols-2" id="accountsGrid" aria-live="polite"></div>
     
                   <div class="transactions-panel">
@@ -79,6 +128,12 @@
                 </section>
     
                 <section class="tab-panel" id="tab-payments" data-i18n="panels.payments" data-i18n-attr="aria-label">
+                  <div class="panel-heading">
+                    <div>
+                      <h2 data-i18n="payments.title"></h2>
+                      <p data-i18n="payments.helper"></p>
+                    </div>
+                  </div>
                   <div class="cards-grid cols-2">
                     <form class="form-card" id="transferForm">
                       <h3 data-i18n="forms.transfer.title"></h3>
@@ -99,7 +154,7 @@
                       <select id="billPayee" required></select>
                       <label for="billAmount" data-i18n="forms.bill.amount"></label>
                       <input id="billAmount" type="number" min="1" step="0.01" required />
-                      <label for="billFrequency" data-i18n="forms.bill.frequency"></label>
+                      <label for="billFrequency" data-i18n="forms.bill.frequencyLabel"></label>
                       <select id="billFrequency" required></select>
                       <button type="submit" class="button primary" data-i18n="forms.bill.submit"></button>
                     </form>
@@ -149,6 +204,12 @@
                 </section>
     
                 <section class="tab-panel" id="tab-security" data-i18n="panels.security" data-i18n-attr="aria-label">
+                  <div class="panel-heading">
+                    <div>
+                      <h2 data-i18n="security.title"></h2>
+                      <p data-i18n="security.helper"></p>
+                    </div>
+                  </div>
                   <div class="cards-grid cols-2">
                     <div class="card-preview" aria-live="polite">
                       <div class="line"><span data-i18n="card.preview.name"></span><span id="cardLockBadge" data-i18n="card.preview.badgeActive"></span></div>
@@ -202,6 +263,7 @@
               <h2 data-i18n="tasks.title"></h2>
               <p class="helper" style="margin:0;" data-i18n="tasks.helper"></p>
               <div class="task-progress" id="taskProgress" aria-live="polite"></div>
+              <div class="task-meter" aria-hidden="true"><span id="taskMeterFill"></span></div>
               <ul class="task-list" id="practiceTasksList"></ul>
               <button type="button" class="button secondary" id="resetTasksBtn" data-i18n="tasks.reset"></button>
             </section>
@@ -222,6 +284,7 @@
           <p class="helper" style="margin:.25rem 0 0;" data-i18n="clinician.helper"></p>
           <textarea id="clinician-comment" data-i18n="clinician.placeholder" data-i18n-attr="placeholder"></textarea>
         </section>
+    </section>
   </main>
 </body>
 </html>

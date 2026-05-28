@@ -8,19 +8,37 @@ const EN_STRINGS = {
     "description": "Practise real-time mobile banking: balances, transfers, bills, card controls, and statement exports."
   },
   "header": {
-    "brand": "Brightwave"
+    "brand": "Brightwave",
+    "secure": "Secure",
+    "greeting": "Good morning, Jordan",
+    "available": "Available now",
+    "protected": "Protected session"
   },
   "instructions": {
-    "summaryTitle": "How to use this simulator",
-    "summaryBody1": "Practise routine online banking tasks inside a touch-style interface.",
-    "summaryBody2": "Select the mobile or tablet frame, then explore the tabs to manage balances, transfers, bills, cards, and security. If a step is missed, the prompt bar will explain what to do next so you can self-correct."
+    "title": "Brightwave Mobile Banking Simulator",
+    "lead": "Practise everyday banking in a realistic mobile app without using real accounts, cards, or payments.",
+    "scenarioTitle": "Scenario:",
+    "scenarioBody": "You are helping Jordan check their finances, make routine payments, and secure their debit card before travelling.",
+    "tasksTitle": "You will practise",
+    "tasks": {
+      "review": "Review balances and recent transactions.",
+      "statement": "Export a statement for the current account.",
+      "transfer": "Move money from current account to savings.",
+      "payments": "Pay a bill, send money, and review regular payments.",
+      "cards": "Lock the debit card and update spending limits."
+    },
+    "support": "Prompts appear beside the simulator if a step needs correction. The checklist also updates automatically.",
+    "start": "Start banking practice"
   },
   "toolbar": {
     "controlBarAria": "View options and status",
     "viewToggleAria": "Switch device frame",
-    "phone": "📱 Phone",
-    "tablet": "💻 Tablet",
-    "lastSync": "Balances refresh instantly — last sync {time}"
+    "workspaceTitle": "Practice workspace",
+    "workspaceHint": "Complete the numbered tasks in order.",
+    "phone": "Phone",
+    "tablet": "Tablet",
+    "instructions": "Instructions",
+    "lastSync": "Last sync {time}"
   },
   "status": {
     "cardUnlocked": "Card unlocked",
@@ -47,11 +65,14 @@ const EN_STRINGS = {
     "security": "Card and PIN tools"
   },
   "accounts": {
+    "overviewTitle": "Accounts",
+    "overviewHelper": "Review balances, tap an account, and export statements from the transaction history.",
+    "badge": "Live simulation",
     "filterLabel": "View transactions for",
-    "refresh": "🔄 Refresh now",
+    "refresh": "Refresh",
     "pendingHint": "Pending items show in amber.",
-    "exportCsv": "⬇️ Export CSV",
-    "exportPdf": "⬇️ Export PDF",
+    "exportCsv": "Export CSV",
+    "exportPdf": "Export PDF",
     "current": {
       "name": "Current Account",
       "type": "Current"
@@ -64,6 +85,10 @@ const EN_STRINGS = {
       "name": "Travel Wallet (EUR)",
       "type": "Linked (EUR)"
     }
+  },
+  "payments": {
+    "title": "Payments",
+    "helper": "Move money internally first, then handle bill payments and external transfers."
   },
   "forms": {
     "transfer": {
@@ -78,7 +103,7 @@ const EN_STRINGS = {
       "payFrom": "Pay from",
       "payee": "Payee",
       "amount": "Amount",
-      "frequency": "Frequency",
+      "frequencyLabel": "Frequency",
       "submit": "Confirm payment",
       "options": {
         "default": "-- Choose payee --",
@@ -86,6 +111,11 @@ const EN_STRINGS = {
         "water": "City Water Board",
         "rent": "Evergreen Rentals",
         "card": "Momentum Credit Card"
+      },
+      "frequency": {
+        "once": "One-off payment",
+        "monthly": "Monthly recurring",
+        "quarterly": "Quarterly recurring"
       },
       "frequencyOptions": {
         "once": "One-off payment",
@@ -123,6 +153,10 @@ const EN_STRINGS = {
       "schedulePlaceholder": "e.g. 15th of each month",
       "submit": "Add instruction"
     }
+  },
+  "security": {
+    "title": "Cards and security",
+    "helper": "Manage the simulated debit card after the account and payment tasks are complete."
   },
   "mandates": {
     "directDebits": {
@@ -174,8 +208,8 @@ const EN_STRINGS = {
     },
     "controls": {
       "title": "Card controls",
-      "lock": "🔐 Lock card",
-      "unlock": "🔓 Unlock card"
+      "lock": "Lock card",
+      "unlock": "Unlock card"
     },
     "request": {
       "title": "Request a new card",
@@ -207,32 +241,40 @@ const EN_STRINGS = {
   "tasks": {
     "aria": "Practice task checklist",
     "title": "Today's practice",
-    "helper": "Work through each activity inside the simulator. Items tick themselves when you complete the matching action.",
+    "helper": "Follow the numbered sequence. Items tick themselves when you complete the matching action.",
     "reset": "Reset checklist",
     "progress": "{completed} of {total} tasks completed",
     "items": {
       "checkBalances": {
-        "title": "Check balances",
+        "title": "Review balances",
         "helper": "Refresh the Accounts tab to confirm your current, savings, and linked totals."
       },
-      "recurringPayment": {
-        "title": "Set up a recurring payment",
-        "helper": "Use bill payments or mandates to schedule an automatic outgoing payment."
-      },
-      "sendExternal": {
-        "title": "Send money to other people or accounts",
-        "helper": "Complete the send money form with a recipient and delivery method."
+      "exportStatement": {
+        "title": "Export a statement",
+        "helper": "Download a CSV or PDF statement for the selected account."
       },
       "transferOwn": {
-        "title": "Transfer money between your own accounts",
+        "title": "Transfer to savings",
         "helper": "Move funds internally using the transfer form."
       },
-      "changePin": {
-        "title": "Change your PIN",
-        "helper": "Submit matching four-digit PIN entries in the security tab."
+      "recurringPayment": {
+        "title": "Pay a household bill",
+        "helper": "Use the bill payment form and choose either one-off or recurring frequency."
+      },
+      "sendExternal": {
+        "title": "Send money to someone",
+        "helper": "Complete the send money form with a recipient and delivery method."
+      },
+      "reviewRegulars": {
+        "title": "Review regular payments",
+        "helper": "Pause, cancel, resume, or reinstate one direct debit or standing order."
+      },
+      "lockCard": {
+        "title": "Lock the debit card",
+        "helper": "Use Card controls in the security tab to lock the simulated card."
       },
       "setLimits": {
-        "title": "Set spending limits",
+        "title": "Update spending limits",
         "helper": "Adjust the daily and contactless card limits in the security tools."
       }
     }
@@ -242,7 +284,7 @@ const EN_STRINGS = {
   },
   "session": {
     "title": "Session tracker",
-    "download": "⬇️ Download session CSV",
+    "download": "Download session CSV",
     "clear": "Clear tracker"
   },
   "clinician": {
@@ -256,9 +298,9 @@ const EN_STRINGS = {
   },
   "prompts": {
     "prefix": {
-      "error": "⚠️ Check & retry:",
-      "success": "✅ Done:",
-      "info": "ℹ️ Info:"
+      "error": "Check and retry:",
+      "success": "Done:",
+      "info": "Info:"
     },
     "next": "Next: {step}",
     "ready": "Ready when you are. Choose a task to begin.",
@@ -770,10 +812,12 @@ window.addEventListener('DOMContentLoaded', () => {
       ],
       practiceTasks: [
         { id: 'check-balances', titleKey: 'tasks.items.checkBalances.title', helperKey: 'tasks.items.checkBalances.helper', completed: false },
-        { id: 'recurring-payment', titleKey: 'tasks.items.recurringPayment.title', helperKey: 'tasks.items.recurringPayment.helper', completed: false },
-        { id: 'send-external', titleKey: 'tasks.items.sendExternal.title', helperKey: 'tasks.items.sendExternal.helper', completed: false },
+        { id: 'export-statement', titleKey: 'tasks.items.exportStatement.title', helperKey: 'tasks.items.exportStatement.helper', completed: false },
         { id: 'transfer-own', titleKey: 'tasks.items.transferOwn.title', helperKey: 'tasks.items.transferOwn.helper', completed: false },
-        { id: 'change-pin', titleKey: 'tasks.items.changePin.title', helperKey: 'tasks.items.changePin.helper', completed: false },
+        { id: 'pay-bill', titleKey: 'tasks.items.recurringPayment.title', helperKey: 'tasks.items.recurringPayment.helper', completed: false },
+        { id: 'send-external', titleKey: 'tasks.items.sendExternal.title', helperKey: 'tasks.items.sendExternal.helper', completed: false },
+        { id: 'review-regulars', titleKey: 'tasks.items.reviewRegulars.title', helperKey: 'tasks.items.reviewRegulars.helper', completed: false },
+        { id: 'lock-card', titleKey: 'tasks.items.lockCard.title', helperKey: 'tasks.items.lockCard.helper', completed: false },
         { id: 'set-limits', titleKey: 'tasks.items.setLimits.title', helperKey: 'tasks.items.setLimits.helper', completed: false },
       ],
       timeline: [],
@@ -789,10 +833,15 @@ window.addEventListener('DOMContentLoaded', () => {
     const sessionTimeline = document.getElementById('sessionTimeline');
     const practiceTasksList = document.getElementById('practiceTasksList');
     const taskProgress = document.getElementById('taskProgress');
+    const taskMeterFill = document.getElementById('taskMeterFill');
     const limitSummary = document.getElementById('limitSummary');
     const availabilityStatus = document.getElementById('availabilityStatus');
     const cardStatusLabel = document.getElementById('cardStatusLabel');
     const cardLockBadge = document.getElementById('cardLockBadge');
+    const introScreen = document.getElementById('introScreen');
+    const practiceScreen = document.getElementById('practiceScreen');
+    const startPracticeBtn = document.getElementById('startPracticeBtn');
+    const backToInstructionsBtn = document.getElementById('backToInstructionsBtn');
 
     function localeForCurrency(currency = 'GBP') {
       const lang = I18N.lang || 'en';
@@ -817,6 +866,13 @@ window.addEventListener('DOMContentLoaded', () => {
       availabilityStatus.setAttribute('data-i18n', 'toolbar.lastSync');
       availabilityStatus.setAttribute('data-i18n-time', timeText);
       I18N.apply(availabilityStatus);
+    }
+
+    function renderAvailableBalance() {
+      const label = document.getElementById('availableBalanceLabel');
+      if (!label) return;
+      const current = state.accounts.find(acc => acc.id === 'current');
+      label.textContent = current ? formatCurrency(current.balance, current.currency) : '';
     }
 
     function renderPrompt() {
@@ -892,6 +948,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function renderAccounts() {
       if (!accountsGrid) return;
+      renderAvailableBalance();
       accountsGrid.innerHTML = state.accounts.map(acc => {
         const meta = getAccountMeta(acc.id);
         const isActive = state.selectedAccount === acc.id;
@@ -1013,14 +1070,24 @@ window.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
+    function getMandateName(item) {
+      return item.nameKey ? t(item.nameKey) : item.name;
+    }
+
+    function getMandateSchedule(item) {
+      return item.scheduleKey ? t(item.scheduleKey) : item.schedule;
+    }
+
     function renderMandates() {
       if (directDebitItems) {
         const content = state.directDebits.map(item => {
+          const name = getMandateName(item);
+          const schedule = getMandateSchedule(item);
           return `
             <div class="list-item" data-id="${item.id}">
               <div>
-                <div style="font-weight:600;">${t(item.nameKey)}</div>
-                <span class="meta">${formatCurrency(item.amount)} · ${t(item.scheduleKey)}</span>
+                <div style="font-weight:600;">${name}</div>
+                <span class="meta">${formatCurrency(item.amount)} · ${schedule}</span>
               </div>
               <button type="button" class="button ${item.active ? '' : 'secondary'}" data-action="${item.active ? 'cancel' : 'restore'}" data-i18n="${item.active ? 'mandates.actions.cancel' : 'mandates.actions.restore'}">${t(item.active ? 'mandates.actions.cancel' : 'mandates.actions.restore')}</button>
             </div>
@@ -1031,11 +1098,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
       if (standingOrderItems) {
         const content = state.standingOrders.map(item => {
+          const name = getMandateName(item);
+          const schedule = getMandateSchedule(item);
           return `
             <div class="list-item" data-id="${item.id}">
               <div>
-                <div style="font-weight:600;">${t(item.nameKey)}</div>
-                <span class="meta">${formatCurrency(item.amount)} · ${t(item.scheduleKey)}</span>
+                <div style="font-weight:600;">${name}</div>
+                <span class="meta">${formatCurrency(item.amount)} · ${schedule}</span>
               </div>
               <button type="button" class="button ${item.active ? '' : 'secondary'}" data-action="${item.active ? 'cancel' : 'restore'}" data-i18n="${item.active ? 'mandates.actions.pause' : 'mandates.actions.resume'}">${t(item.active ? 'mandates.actions.pause' : 'mandates.actions.resume')}</button>
             </div>
@@ -1050,9 +1119,11 @@ window.addEventListener('DOMContentLoaded', () => {
           const item = state.directDebits.find(dd => dd.id === id);
           if (!item) return;
           item.active = !item.active;
+          const name = getMandateName(item);
           renderMandates();
-          recordTimeline(item.active ? 'timeline.directDebit.reinstate' : 'timeline.directDebit.cancel', { name: t(item.nameKey) });
-          showPrompt(item.active ? 'prompts.directDebit.reinstate.message' : 'prompts.directDebit.cancel.message', 'success', item.active ? 'prompts.directDebit.reinstate.next' : 'prompts.directDebit.cancel.next', { name: t(item.nameKey) });
+          recordTimeline(item.active ? 'timeline.directDebit.reinstate' : 'timeline.directDebit.cancel', { name });
+          showPrompt(item.active ? 'prompts.directDebit.reinstate.message' : 'prompts.directDebit.cancel.message', 'success', item.active ? 'prompts.directDebit.reinstate.next' : 'prompts.directDebit.cancel.next', { name });
+          completeTask('review-regulars');
         });
       });
 
@@ -1062,9 +1133,11 @@ window.addEventListener('DOMContentLoaded', () => {
           const item = state.standingOrders.find(dd => dd.id === id);
           if (!item) return;
           item.active = !item.active;
+          const name = getMandateName(item);
           renderMandates();
-          recordTimeline(item.active ? 'timeline.standingOrder.resume' : 'timeline.standingOrder.pause', { name: t(item.nameKey) });
-          showPrompt(item.active ? 'prompts.standingOrder.resume.message' : 'prompts.standingOrder.pause.message', 'success', item.active ? 'prompts.standingOrder.resume.next' : 'prompts.standingOrder.pause.next', { name: t(item.nameKey) });
+          recordTimeline(item.active ? 'timeline.standingOrder.resume' : 'timeline.standingOrder.pause', { name });
+          showPrompt(item.active ? 'prompts.standingOrder.resume.message' : 'prompts.standingOrder.pause.message', 'success', item.active ? 'prompts.standingOrder.resume.next' : 'prompts.standingOrder.pause.next', { name });
+          completeTask('review-regulars');
         });
       });
     }
@@ -1073,18 +1146,22 @@ window.addEventListener('DOMContentLoaded', () => {
       if (!taskProgress) return;
       const total = state.practiceTasks.length;
       const completed = state.practiceTasks.filter(task => task.completed).length;
+      const percent = total ? Math.round((completed / total) * 100) : 0;
       taskProgress.setAttribute('data-i18n', 'tasks.progress');
       taskProgress.setAttribute('data-i18n-completed', completed);
       taskProgress.setAttribute('data-i18n-total', total);
       taskProgress.textContent = t('tasks.progress', { completed, total });
+      if (taskMeterFill) taskMeterFill.style.width = `${percent}%`;
     }
 
     function renderTasks() {
       if (!practiceTasksList) return;
-      practiceTasksList.innerHTML = state.practiceTasks.map(task => `
-        <li class="${task.completed ? 'complete' : ''}">
+      const nextTask = state.practiceTasks.find(task => !task.completed);
+      practiceTasksList.innerHTML = state.practiceTasks.map((task, index) => `
+        <li class="${task.completed ? 'complete' : ''} ${nextTask?.id === task.id ? 'active' : ''}">
           <label class="task-item">
             <input type="checkbox" data-task="${task.id}" ${task.completed ? 'checked' : ''} />
+            <span class="task-number" aria-hidden="true">${index + 1}</span>
             <span>
               <strong data-i18n="${task.titleKey}">${t(task.titleKey)}</strong>
               <small data-i18n="${task.helperKey}">${t(task.helperKey)}</small>
@@ -1105,7 +1182,7 @@ window.addEventListener('DOMContentLoaded', () => {
         checkbox.checked = true;
         checkbox.closest('li')?.classList.add('complete');
       }
-      updateTaskProgress();
+      renderTasks();
       recordTimeline('timeline.tasks.completed', { task: t(task.titleKey) });
     }
 
@@ -1113,11 +1190,7 @@ window.addEventListener('DOMContentLoaded', () => {
       state.practiceTasks.forEach(task => {
         task.completed = false;
       });
-      practiceTasksList?.querySelectorAll('input[type="checkbox"]').forEach(input => {
-        input.checked = false;
-        input.closest('li')?.classList.remove('complete');
-      });
-      updateTaskProgress();
+      renderTasks();
       if (manual) {
         showPrompt('prompts.tasks.reset.message', 'info', 'prompts.tasks.reset.next');
         recordTimeline('timeline.tasks.reset');
@@ -1183,8 +1256,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const task = state.practiceTasks.find(item => item.id === target.dataset.task);
       if (!task) return;
       task.completed = target.checked;
-      target.closest('li')?.classList.toggle('complete', task.completed);
-      updateTaskProgress();
+      renderTasks();
       recordTimeline(task.completed ? 'timeline.tasks.checked' : 'timeline.tasks.reopened', { task: t(task.titleKey) });
     }
 
@@ -1312,7 +1384,7 @@ window.addEventListener('DOMContentLoaded', () => {
           active: true,
         });
         renderMandates();
-        completeTask('recurring-payment');
+        completeTask('pay-bill');
       }
 
       showPrompt('notifications.bill.submitted', 'success', frequency === 'once' ? 'notifications.bill.onceNext' : 'notifications.bill.recurringNext');
@@ -1321,6 +1393,7 @@ window.addEventListener('DOMContentLoaded', () => {
         frequency: t(BILL_FREQUENCIES.find(f => f.value === frequency)?.labelKey),
         account: t(ACCOUNT_NAME_KEYS[accountId]),
       });
+      completeTask('pay-bill');
       event.target.reset();
     }
 
@@ -1385,7 +1458,7 @@ window.addEventListener('DOMContentLoaded', () => {
       renderMandates();
       showPrompt(type === 'directDebit' ? 'notifications.mandate.directDebitCreated' : 'notifications.mandate.standingCreated', 'success', 'notifications.mandate.manageNext');
       recordTimeline(type === 'directDebit' ? 'timeline.directDebit.created' : 'timeline.standingOrder.created', { name });
-      completeTask('recurring-payment');
+      completeTask('review-regulars');
       event.target.reset();
     }
 
@@ -1434,6 +1507,7 @@ window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('unlockCardBtn').disabled = !lock;
       showPrompt(lock ? 'notifications.card.locked' : 'notifications.card.unlocked', 'success', lock ? 'notifications.card.lockedNext' : 'notifications.card.unlockedNext');
       recordTimeline(lock ? 'timeline.card.locked' : 'timeline.card.unlocked');
+      if (lock) completeTask('lock-card');
     }
 
     function handlePinChange(event) {
@@ -1537,6 +1611,7 @@ window.addEventListener('DOMContentLoaded', () => {
       URL.revokeObjectURL(url);
       showPrompt('notifications.export.csv', 'success', 'notifications.export.csvNext');
       recordTimeline('timeline.export.csv', { account: t(ACCOUNT_NAME_KEYS[account.id]) });
+      completeTask('export-statement');
     }
 
     function generatePdfLines() {
@@ -1618,6 +1693,20 @@ window.addEventListener('DOMContentLoaded', () => {
       URL.revokeObjectURL(url);
       showPrompt('notifications.export.pdf', 'success', 'notifications.export.pdfNext');
       recordTimeline('timeline.export.pdf', { account: t(ACCOUNT_NAME_KEYS[account.id]) });
+      completeTask('export-statement');
+    }
+
+    function showPracticeScreen() {
+      introScreen?.classList.add('hidden');
+      practiceScreen?.classList.remove('hidden');
+      document.getElementById('refreshBtn')?.focus({ preventScroll: true });
+      showPrompt('prompts.ready', 'info', 'notifications.tab.accountsNext');
+    }
+
+    function showIntroScreen() {
+      practiceScreen?.classList.add('hidden');
+      introScreen?.classList.remove('hidden');
+      startPracticeBtn?.focus({ preventScroll: true });
     }
 
     function initTime() {
@@ -1632,6 +1721,9 @@ window.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.view-toggle button').forEach(btn => {
       btn.addEventListener('click', () => toggleViewMode(btn.dataset.view));
     });
+
+    startPracticeBtn?.addEventListener('click', showPracticeScreen);
+    backToInstructionsBtn?.addEventListener('click', showIntroScreen);
 
     document.querySelectorAll('.tab-nav button').forEach(btn => {
       btn.addEventListener('click', () => switchTab(btn.dataset.tab));

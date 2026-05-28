@@ -14,13 +14,6 @@ const imports = [
     i18nFiles: ['docs/apps/emotion-chat/i18n/en.json'],
   },
   {
-    source: 'docs/apps/memory-in-action/index.html',
-    target: 'apps/memory-in-action',
-    title: 'Memory in Action',
-    stylesheet: '../../shared/theme.css',
-    i18nFiles: [],
-  },
-  {
     source: 'docs/apps/mobile-banking-simulator/index.html',
     target: 'apps/brightwave-mobile-banking',
     title: 'Brightwave Mobile Banking Simulator',

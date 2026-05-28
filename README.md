@@ -1,6 +1,6 @@
 # Micro Apps Suite
 
-Micro Apps Suite is a consolidated static collection of eight English-language practice apps. It merges selected work from `Brickfielder/micro-apps` and `Brickfielder/micro-apps-repository` into one build-free repository with a shared calm clinical interface baseline.
+Micro Apps Suite is a consolidated static collection of seven English-language practice apps. It merges selected work from `Brickfielder/micro-apps` and `Brickfielder/micro-apps-repository` into one build-free repository with a shared calm clinical interface baseline.
 
 ## Retained apps
 
@@ -10,7 +10,6 @@ Micro Apps Suite is a consolidated static collection of eight English-language p
 - Fresh Market
 - Left-Anchor Reader
 - Emotion Chats
-- Memory in Action
 - Brightwave Mobile Banking Simulator
 
 ## Run locally

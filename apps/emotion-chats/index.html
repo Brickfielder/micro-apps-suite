@@ -9,85 +9,168 @@
   <script defer src="./app.js"></script>
 </head>
 <body>
-  <main id="app-root" class="suite-app">
-    <div class="toolbar" role="region" data-i18n="toolbar.aria" data-i18n-attr="aria-label">
-          <div class="ctrl">
-            <label for="scenario" data-i18n="toolbar.scenario.label">Scenario</label>
-            <select id="scenario"></select>
-          </div>
-          <div class="ctrl">
-            <label for="distractors" data-i18n="toolbar.distractors.label">Distractors per person</label>
-            <select id="distractors">
-              <option>6</option><option selected>8</option><option>10</option><option>12</option><option>14</option>
-            </select>
-          </div>
-    
-          <button class="button primary" id="play" data-i18n="toolbar.play">Play chat</button>
-          <button class="button" id="skip" disabled data-i18n="toolbar.skip">Skip chat</button>
-          <button class="button" id="reset" disabled data-i18n="toolbar.reset">Reset</button>
-          <button class="button" id="download" title="Download CSV of your results" disabled
-                  data-i18n="toolbar.download.label" data-i18n-attr="title">Download CSV</button>
-          <span class="small" id="status" aria-live="polite" data-i18n="toolbar.status.ready">Ready</span>
+  <main id="app-root" class="suite-app emotion-app">
+    <header class="app-titlebar">
+      <div class="brand-title">
+        <span class="brand-bubble" aria-hidden="true"></span>
+        <div>
+          <h1 data-i18n="screen.title">Emotion Chats</h1>
+          <p data-i18n="hero.description">Recognise emotions and intentions in short chat-style vignettes.</p>
         </div>
-    
-        <div class="app-grid">
-          <section class="card" aria-labelledby="chatTitle">
-            <h2 id="chatTitle" data-i18n="sections.chat.title">Chat</h2>
+      </div>
+      <div class="session-status">
+        <span id="status" aria-live="polite" data-i18n="toolbar.status.ready">Ready</span>
+        <span id="timerText"></span>
+      </div>
+    </header>
+
+    <div class="app-grid">
+      <section class="phone-area" aria-labelledby="chatTitle">
+        <div class="phone-shell">
+          <div class="phone-notch" aria-hidden="true"></div>
+          <div class="messenger-app">
+            <div class="phone-status" aria-hidden="true">
+              <span id="phoneTime">09:41</span>
+              <span class="signal-dots"><i></i><i></i><i></i><i></i></span>
+            </div>
+            <header class="chat-header">
+              <div class="avatar-pair" aria-hidden="true">
+                <span id="avatarA">A</span>
+                <span id="avatarB">S</span>
+              </div>
+              <div>
+                <h2 id="chatTitle" data-i18n="sections.chat.title">Chat</h2>
+                <p id="chatSubtitle" data-i18n="sections.chat.subtitle">Tap play to watch the conversation arrive.</p>
+              </div>
+              <div class="chat-actions" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+            </header>
             <div id="chat" class="chat" aria-label="Chat transcript" aria-live="polite"
                  data-i18n="sections.chat.aria" data-i18n-attr="aria-label"></div>
-            <div class="footer">
+            <div class="composer" aria-hidden="true">
+              <span class="composer-plus">+</span>
+              <span data-i18n="sections.chat.composer">Message</span>
+              <span class="composer-send"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="coach-panel" aria-labelledby="respTitle">
+        <div class="control-card">
+          <div class="toolbar" role="region" data-i18n="toolbar.aria" data-i18n-attr="aria-label">
+            <div class="ctrl">
+              <label for="scenario" data-i18n="toolbar.scenario.label">Scenario</label>
+              <select id="scenario"></select>
+            </div>
+            <div class="ctrl compact-control">
+              <label for="distractors" data-i18n="toolbar.distractors.label">Distractors per person</label>
+              <select id="distractors">
+                <option>6</option><option selected>8</option><option>10</option><option>12</option><option>14</option>
+              </select>
+            </div>
+            <div class="action-row">
+              <button class="button primary" id="play" data-i18n="toolbar.play">Play chat</button>
+              <button class="button" id="skip" disabled data-i18n="toolbar.skip">Skip chat</button>
+              <button class="button" id="reset" disabled data-i18n="toolbar.reset">Reset</button>
+              <button class="button" id="download" title="Download CSV of your results" disabled
+                      data-i18n="toolbar.download.label" data-i18n-attr="title">Download CSV</button>
+            </div>
+          </div>
+          <div class="progress-strip">
+            <div>
+              <strong>Progress</strong>
               <span class="small" id="progress" aria-live="polite" data-i18n="toolbar.status.progress"
                     data-i18n-current="0" data-i18n-total="0">0 / 0</span>
-              <span class="small" id="timerText"></span>
             </div>
-          </section>
-    
-          <section class="card" aria-labelledby="respTitle">
-            <h2 id="respTitle" data-i18n="sections.responses.title">Your responses</h2>
-    
-            <div class="step" id="step1">
-              <h3 data-i18n="sections.step1.title">Step 1 — Free choice</h3>
-              <div class="row">
-                <div>
-                  <label class="legend" for="freeA" id="labelA" data-i18n="sections.step1.label">What emotions was {name} feeling?</label>
-                  <textarea id="freeA" data-i18n="sections.step1.placeholder" data-i18n-attr="placeholder"
-                            placeholder="Type one or more emotions…"></textarea>
+            <div class="progress-track" aria-hidden="true"><span id="progressFill"></span></div>
+          </div>
+        </div>
+
+        <div class="response-card">
+          <h2 id="respTitle" class="sr-only" data-i18n="sections.responses.title">Your responses</h2>
+
+          <div class="step" id="step1">
+            <h3 data-i18n="sections.step1.title">Step 1 — Free choice</h3>
+            <p class="step-copy" data-i18n="sections.step1.copy">Describe each person's emotions in your own words before choosing from the list.</p>
+            <div class="response-grid">
+              <div class="response-person">
+                <div class="person-head">
+                  <span class="person-avatar" id="avatarFormA" aria-hidden="true"></span>
+                  <strong id="personNameA">Alex</strong>
                 </div>
-                <div>
-                  <label class="legend" for="freeB" id="labelB" data-i18n="sections.step1.label">What emotions was {name} feeling?</label>
-                  <textarea id="freeB" data-i18n="sections.step1.placeholder" data-i18n-attr="placeholder"
-                            placeholder="Type one or more emotions…"></textarea>
-                </div>
+                <label class="legend" for="freeA" id="labelA" data-i18n="sections.step1.label">What emotions was {name} feeling?</label>
+                <textarea id="freeA" data-i18n="sections.step1.placeholder" data-i18n-attr="placeholder"
+                          placeholder="Type one or more emotions…" maxlength="200"></textarea>
+                <span class="char-count" id="countA">0 / 200</span>
               </div>
-              <div class="divider"></div>
+              <div class="response-person">
+                <div class="person-head">
+                  <span class="person-avatar" id="avatarFormB" aria-hidden="true"></span>
+                  <strong id="personNameB">Sam</strong>
+                </div>
+                <label class="legend" for="freeB" id="labelB" data-i18n="sections.step1.label">What emotions was {name} feeling?</label>
+                <textarea id="freeB" data-i18n="sections.step1.placeholder" data-i18n-attr="placeholder"
+                          placeholder="Type one or more emotions…" maxlength="200"></textarea>
+                <span class="char-count" id="countB">0 / 200</span>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="step-actions">
               <button class="button primary" id="proceed" disabled data-i18n="sections.step1.continue">Continue to Step 2</button>
-              <span class="small" id="step1Hint" data-i18n="sections.step1.hint.wait">Finish the chat, then fill both boxes to proceed.</span>
+              <span class="small step-hint" id="step1Hint" data-i18n="sections.step1.hint.wait">Finish the chat, then fill both boxes to proceed.</span>
             </div>
-    
-            <div class="step" id="step2" hidden>
-              <h3 data-i18n="sections.step2.title">Step 2 — Select emotions (choose all that apply)</h3>
-              <div class="row" style="grid-template-columns:1fr 1fr">
-                <div>
-                  <div class="legend" id="pillTitleA" data-i18n="sections.step2.legend"></div>
-                  <div class="pillgrid" id="pillsA"></div>
+          </div>
+
+          <div class="step locked" id="step2">
+            <h3 data-i18n="sections.step2.title">Step 2 — Select emotions (choose all that apply)</h3>
+            <p class="step-copy" data-i18n="sections.step2.copy">Pick the emotions that best fit each person.</p>
+            <div class="emotion-choice-list">
+              <div class="emotion-choice-row">
+                <div class="person-head">
+                  <span class="person-avatar" id="avatarPillA" aria-hidden="true"></span>
+                  <div>
+                    <strong id="personPillNameA">Alex</strong>
+                    <div class="legend" id="pillTitleA" data-i18n="sections.step2.legend"></div>
+                  </div>
                 </div>
-                <div>
-                  <div class="legend" id="pillTitleB" data-i18n="sections.step2.legend"></div>
-                  <div class="pillgrid" id="pillsB"></div>
-                </div>
+                <div class="pillgrid" id="pillsA"></div>
               </div>
-              <div class="divider"></div>
-              <button class="button primary" id="submit" disabled data-i18n="sections.step2.submit">Show feedback</button>
+              <div class="emotion-choice-row">
+                <div class="person-head">
+                  <span class="person-avatar" id="avatarPillB" aria-hidden="true"></span>
+                  <div>
+                    <strong id="personPillNameB">Sam</strong>
+                    <div class="legend" id="pillTitleB" data-i18n="sections.step2.legend"></div>
+                  </div>
+                </div>
+                <div class="pillgrid" id="pillsB"></div>
+              </div>
             </div>
-    
-            <div class="step" id="step3" hidden>
-              <h3 data-i18n="sections.step3.title">Step 3 — Feedback</h3>
+            <div class="divider"></div>
+            <button class="button primary" id="submit" disabled data-i18n="sections.step2.submit">Show feedback</button>
+          </div>
+
+          <div class="step feedback-step locked" id="step3">
+            <h3>
+              <span data-i18n="sections.step3.title">Step 3 — Review & feedback</span>
+              <span class="step-note" id="step3Note" data-i18n="sections.step3.note">Complete steps above first</span>
+            </h3>
+            <p class="step-copy" data-i18n="sections.step3.copy">See example feedback and key learning points.</p>
+            <div class="feedback-lock" id="feedbackLock">
+              <span class="lock-icon" aria-hidden="true"></span>
+              <span data-i18n="sections.step3.locked">Complete Steps 1 and 2 to view feedback and insights.</span>
+            </div>
+            <div class="feedback-results" id="feedbackResults" hidden>
               <div class="feedback" id="fbA"></div>
               <div class="feedback" id="fbB"></div>
               <div class="tags" id="kpi"></div>
             </div>
-          </section>
+          </div>
         </div>
+      </section>
+    </div>
   </main>
 </body>
 </html>

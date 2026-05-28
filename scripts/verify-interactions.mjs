@@ -70,16 +70,6 @@ const checks = [
     })()`,
   },
   {
-    route: 'memory-in-action',
-    path: '/apps/memory-in-action/index.html',
-    expression: `(() => {
-      document.querySelector('#btnDemo').click();
-      document.querySelector('#btnStart').click();
-      return document.querySelector('#strategyCard').classList.contains('hidden') &&
-        !document.querySelector('#scenarioCard').classList.contains('hidden');
-    })()`,
-  },
-  {
     route: 'brightwave-mobile-banking',
     path: '/apps/brightwave-mobile-banking/index.html',
     expression: `(() => {

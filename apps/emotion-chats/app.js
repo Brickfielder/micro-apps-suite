@@ -33,13 +33,19 @@ const EN_STRINGS = {
     "chat": {
       "title": "Chat",
       "title_with_names": "Chat — {name_a} & {name_b}",
-      "aria": "Chat transcript"
+      "aria": "Chat transcript",
+      "subtitle": "Tap play to watch the conversation arrive.",
+      "subtitle_with_scenario": "{scenario} · simulated messaging conversation",
+      "emptyTitle": "No messages yet",
+      "emptyBody": "Press Play chat to receive the messages one by one, then identify how each person may be feeling.",
+      "composer": "Message"
     },
     "responses": {
       "title": "Your responses"
     },
     "step1": {
       "title": "Step 1 — Free choice",
+      "copy": "Describe each person's emotions in your own words before choosing from the list.",
       "label": "What emotions was {name} feeling?",
       "placeholder": "Type one or more emotions…",
       "hint": {
@@ -51,11 +57,15 @@ const EN_STRINGS = {
     },
     "step2": {
       "title": "Step 2 — Select emotions (choose all that apply)",
+      "copy": "Pick the emotions that best fit each person.",
       "legend": "Select all that apply for {name}",
       "submit": "Show feedback"
     },
     "step3": {
-      "title": "Step 3 — Feedback",
+      "title": "Step 3 — Review & feedback",
+      "note": "Complete steps above first",
+      "copy": "See example feedback and key learning points.",
+      "locked": "Complete Steps 1 and 2 to view feedback and insights.",
       "correct": "Correct:",
       "selected": "You selected:",
       "hits": "Hits",
@@ -950,11 +960,29 @@ window.addEventListener('DOMContentLoaded', () => {
       const progressEl = $("progress");
       const chatTitle = $("chatTitle");
       const timerText = $("timerText");
+      const progressFill = $("progressFill");
+      const chatSubtitle = $("chatSubtitle");
+      const avatarA = $("avatarA");
+      const avatarB = $("avatarB");
+      const avatarFormA = $("avatarFormA");
+      const avatarFormB = $("avatarFormB");
+      const avatarPillA = $("avatarPillA");
+      const avatarPillB = $("avatarPillB");
+      const personNameA = $("personNameA");
+      const personNameB = $("personNameB");
+      const personPillNameA = $("personPillNameA");
+      const personPillNameB = $("personPillNameB");
+      const phoneTime = $("phoneTime");
+      const countA = $("countA");
+      const countB = $("countB");
       const proceedBtn = $("proceed");
       const step1Hint = $("step1Hint");
       const step2 = $("step2");
       const submitBtn = $("submit");
       const step3 = $("step3");
+      const step3Note = $("step3Note");
+      const feedbackLock = $("feedbackLock");
+      const feedbackResults = $("feedbackResults");
       const freeA = $("freeA");
       const freeB = $("freeB");
       const labelA = $("labelA");
@@ -981,6 +1009,7 @@ window.addEventListener('DOMContentLoaded', () => {
       let current = null;
       let idx = 0;
       let revealed = false;
+      let emotionSelectionOpen = false;
       let startTime = 0;
       let endTime = 0;
       let timer = null;
@@ -988,6 +1017,65 @@ window.addEventListener('DOMContentLoaded', () => {
       let listFormatter = new Intl.ListFormat(I18N.lang, { style: 'long', type: 'conjunction' });
 
       const setDisabled = (el, value) => el.toggleAttribute('disabled', !!value);
+
+      function avatarSvg(name, from) {
+        const palettes = {
+          A: { bg: '#dbeafe', shirt: '#2f80ed', hair: '#2d1f1a', skin: '#c98252' },
+          B: { bg: '#dcfce7', shirt: '#20a67a', hair: '#3a2417', skin: '#d6a06d' },
+        };
+        const p = palettes[from] || palettes.A;
+        const initial = String(name || from || '?').trim().slice(0, 1).toUpperCase();
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+          <rect width="80" height="80" rx="40" fill="${p.bg}"/>
+          <path d="M17 72c3-16 14-25 23-25s20 9 23 25" fill="${p.shirt}"/>
+          <circle cx="40" cy="36" r="18" fill="${p.skin}"/>
+          <path d="M22 34c2-17 12-25 26-21 9 3 13 9 12 21-8-9-19-8-30-3-3 1-5 2-8 3z" fill="${p.hair}"/>
+          <circle cx="33" cy="37" r="2" fill="#1f2937"/>
+          <circle cx="47" cy="37" r="2" fill="#1f2937"/>
+          <path d="M33 47c5 4 10 4 15 0" fill="none" stroke="#7c2d12" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="63" cy="61" r="13" fill="#fff"/>
+          <text x="63" y="67" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="${p.shirt}">${initial}</text>
+        </svg>`;
+        return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+      }
+
+      function applyAvatar(el, name, from) {
+        if (!el) return;
+        el.style.backgroundImage = avatarSvg(name, from);
+        el.setAttribute('aria-label', `${name} avatar`);
+      }
+
+      function renderParticipantIdentity() {
+        const nameA = current?.people?.A || 'A';
+        const nameB = current?.people?.B || 'B';
+        [
+          [avatarA, nameA, 'A'],
+          [avatarFormA, nameA, 'A'],
+          [avatarPillA, nameA, 'A'],
+          [avatarB, nameB, 'B'],
+          [avatarFormB, nameB, 'B'],
+          [avatarPillB, nameB, 'B'],
+        ].forEach(([el, name, from]) => applyAvatar(el, name, from));
+        if (personNameA) personNameA.textContent = nameA;
+        if (personNameB) personNameB.textContent = nameB;
+        if (personPillNameA) personPillNameA.textContent = nameA;
+        if (personPillNameB) personPillNameB.textContent = nameB;
+      }
+
+      function updateCharCounts() {
+        if (countA) countA.textContent = `${freeA.value.length} / ${freeA.maxLength || 200}`;
+        if (countB) countB.textContent = `${freeB.value.length} / ${freeB.maxLength || 200}`;
+      }
+
+      function setStep2Locked(locked) {
+        emotionSelectionOpen = !locked;
+        step2.hidden = false;
+        step2.classList.toggle('locked', locked);
+        step2.querySelectorAll('.pill-btn').forEach((btn) => {
+          btn.disabled = locked;
+        });
+        updateSubmitState();
+      }
 
       function hydrateData() {
         const dict = I18N.dict || {};
@@ -1032,22 +1120,35 @@ window.addEventListener('DOMContentLoaded', () => {
       }
 
       function clearChat() {
-        chatEl.innerHTML = '';
+        chatEl.innerHTML = `
+          <div class="empty-chat">
+            <strong data-i18n="sections.chat.emptyTitle">${t('sections.chat.emptyTitle')}</strong>
+            <span data-i18n="sections.chat.emptyBody">${t('sections.chat.emptyBody')}</span>
+          </div>
+        `;
       }
 
       function addBubble(message) {
         const wrap = document.createElement('div');
         const bubble = document.createElement('div');
         const who = document.createElement('span');
+        const text = document.createElement('span');
+        const meta = document.createElement('span');
         const from = message.from;
         const name = current?.people?.[from] || from;
+        const minuteOffset = Math.max(0, idx - 1);
+        const sentAt = new Date((startTime || Date.now()) + minuteOffset * 60000);
         who.className = 'name';
         who.textContent = name;
+        text.textContent = message.text;
+        meta.className = 'message-meta';
+        meta.textContent = sentAt.toLocaleTimeString(I18N.lang === 'en' ? 'en-GB' : undefined, { hour: '2-digit', minute: '2-digit' });
         bubble.className = 'bubble ' + (from === 'A' ? 'fromA' : 'fromB');
-        bubble.textContent = message.text;
-        wrap.appendChild(who);
+        wrap.className = 'message-row ' + (from === 'A' ? 'fromA' : 'fromB');
+        bubble.appendChild(who);
+        bubble.appendChild(text);
+        bubble.appendChild(meta);
         wrap.appendChild(bubble);
-        wrap.style.textAlign = from === 'A' ? 'left' : 'right';
         chatEl.appendChild(wrap);
         chatEl.scrollTop = chatEl.scrollHeight;
       }
@@ -1081,6 +1182,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
       function setProgress(currentValue, totalValue) {
         setI18n(progressEl, 'toolbar.status.progress', { current: currentValue, total: totalValue });
+        if (progressFill) {
+          const percent = totalValue ? Math.round((currentValue / totalValue) * 100) : 0;
+          progressFill.style.width = `${percent}%`;
+        }
       }
 
       function setTimerValue(seconds) {
@@ -1143,12 +1248,26 @@ window.addEventListener('DOMContentLoaded', () => {
         scenarioSel.value = current.id;
         idx = 0;
         revealed = false;
+        emotionSelectionOpen = false;
         startTime = 0;
         endTime = 0;
         stopPlaybackTimer();
         stopTicking();
         clearChat();
-        step3.hidden = true;
+        step3.hidden = false;
+        step3.classList.add('locked');
+        if (step3Note) {
+          step3Note.hidden = false;
+        }
+        if (feedbackLock) {
+          feedbackLock.hidden = false;
+        }
+        if (feedbackResults) {
+          feedbackResults.hidden = true;
+        }
+        fbA.innerHTML = '';
+        fbB.innerHTML = '';
+        kpi.innerHTML = '';
         setProgress(0, current.messages.length || 0);
         setTimerValue(null);
         setStatus('toolbar.status.ready');
@@ -1163,15 +1282,21 @@ window.addEventListener('DOMContentLoaded', () => {
           name_a: current.people?.A || 'A',
           name_b: current.people?.B || 'B'
         });
+        setI18n(chatSubtitle, 'sections.chat.subtitle_with_scenario', {
+          scenario: current.title || current.id
+        });
+        renderParticipantIdentity();
         setI18n(labelA, 'sections.step1.label', { name: current.people?.A || 'A' });
         setI18n(labelB, 'sections.step1.label', { name: current.people?.B || 'B' });
 
-        step2.hidden = true;
+        step2.hidden = false;
         submitBtn.disabled = true;
         setI18n(pillTitleA, 'sections.step2.legend', { name: current.people?.A || 'A' });
         setI18n(pillTitleB, 'sections.step2.legend', { name: current.people?.B || 'B' });
 
         buildPills();
+        setStep2Locked(true);
+        updateCharCounts();
         updateProceedState();
       }
 
@@ -1201,6 +1326,7 @@ window.addEventListener('DOMContentLoaded', () => {
           btn.textContent = formatEmotion(id);
           btn.setAttribute('aria-pressed', 'false');
           btn.addEventListener('click', () => {
+            if (!emotionSelectionOpen) return;
             togglePill(btn);
             updateSubmitState();
           });
@@ -1215,6 +1341,7 @@ window.addEventListener('DOMContentLoaded', () => {
           btn.textContent = formatEmotion(id);
           btn.setAttribute('aria-pressed', 'false');
           btn.addEventListener('click', () => {
+            if (!emotionSelectionOpen) return;
             togglePill(btn);
             updateSubmitState();
           });
@@ -1229,6 +1356,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
       function updateProceedState() {
         const filled = freeA.value.trim().length > 0 && freeB.value.trim().length > 0;
+        updateCharCounts();
         setDisabled(proceedBtn, !(filled && revealed));
         if (!revealed) {
           setI18n(step1Hint, 'sections.step1.hint.wait');
@@ -1242,7 +1370,7 @@ window.addEventListener('DOMContentLoaded', () => {
       function updateSubmitState() {
         const aChosen = !!pillsA.querySelector('.pill-btn[aria-pressed="true"]');
         const bChosen = !!pillsB.querySelector('.pill-btn[aria-pressed="true"]');
-        setDisabled(submitBtn, !(aChosen && bChosen));
+        setDisabled(submitBtn, !(emotionSelectionOpen && aChosen && bChosen));
       }
 
       function playChat() {
@@ -1252,6 +1380,9 @@ window.addEventListener('DOMContentLoaded', () => {
         setDisabled(resetBtn, false);
         setStatus('toolbar.status.playing');
         startTime = Date.now();
+        if (phoneTime) {
+          phoneTime.textContent = new Date(startTime).toLocaleTimeString(I18N.lang === 'en' ? 'en-GB' : undefined, { hour: '2-digit', minute: '2-digit' });
+        }
         setTimerValue(0);
         startTicking();
         stopPlaybackTimer();
@@ -1361,6 +1492,16 @@ window.addEventListener('DOMContentLoaded', () => {
         `;
 
         step3.hidden = false;
+        step3.classList.remove('locked');
+        if (step3Note) {
+          step3Note.hidden = true;
+        }
+        if (feedbackLock) {
+          feedbackLock.hidden = true;
+        }
+        if (feedbackResults) {
+          feedbackResults.hidden = false;
+        }
 
         const durationSec = Math.max(0, Math.round(((endTime || Date.now()) - (startTime || Date.now())) / 1000));
         RESULTS.push({
@@ -1411,13 +1552,17 @@ window.addEventListener('DOMContentLoaded', () => {
       }
 
       scenarioSel.addEventListener('change', (e) => loadScenario(e.target.value));
-      distractorsSel.addEventListener('change', () => buildPills());
+      distractorsSel.addEventListener('change', () => {
+        const wasOpen = emotionSelectionOpen;
+        buildPills();
+        setStep2Locked(!wasOpen);
+      });
       playBtn.addEventListener('click', playChat);
       skipBtn.addEventListener('click', skipChat);
       resetBtn.addEventListener('click', resetAll);
       downloadBtn.addEventListener('click', downloadCSV);
       proceedBtn.addEventListener('click', () => {
-        step2.hidden = false;
+        setStep2Locked(false);
         const first = pillsA.querySelector('.pill-btn');
         if (first) first.focus();
       });
