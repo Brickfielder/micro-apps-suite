@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Brightwave Mobile Banking Simulator | Micro Apps Suite</title>
+  <link rel="stylesheet" href="../../shared/theme.css" />
+  <link rel="stylesheet" href="./app.css" />
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <main id="app-root" class="suite-app">
+    <details class="instructions" open>
+          <summary data-i18n="instructions.summaryTitle"></summary>
+          <p style="margin:.5rem 0 0;" data-i18n="instructions.summaryBody1"></p>
+          <p style="margin:.5rem 0 0;" data-i18n="instructions.summaryBody2"></p>
+        </details>
+    
+        <div class="control-bar" data-i18n="toolbar.controlBarAria" data-i18n-attr="aria-label">
+          <div class="view-toggle" role="group" data-i18n="toolbar.viewToggleAria" data-i18n-attr="aria-label">
+            <button type="button" class="active" data-view="phone" aria-pressed="true" data-i18n="toolbar.phone"></button>
+            <button type="button" data-view="tablet" aria-pressed="false" data-i18n="toolbar.tablet"></button>
+          </div>
+          <div class="quick-status" id="availabilityStatus" aria-live="polite"></div>
+        </div>
+    
+        <div class="layout">
+          <section class="device-shell phone" id="deviceShell">
+            <div class="device-notch" aria-hidden="true"></div>
+            <div class="app-surface" role="application" data-i18n="screen.appAria" data-i18n-attr="aria-label">
+              <div class="status-bar">
+                <span id="statusTime">09:42</span>
+                <div class="signals" aria-hidden="true">
+                  <span class="active"></span><span class="active"></span><span class="active"></span><span></span><span></span>
+                </div>
+              </div>
+    
+              <header class="app-header">
+                <h1><span>Bw</span><span data-i18n="header.brand"></span></h1>
+                <div class="quick-status">
+                  <span id="cardStatusLabel" data-i18n="status.cardUnlocked"></span>
+                </div>
+              </header>
+    
+              <nav class="tab-nav" data-i18n="navigation.aria" data-i18n-attr="aria-label">
+                <button type="button" class="active" data-tab="accounts" aria-pressed="true">
+                  <span data-i18n="navigation.accounts.label"></span>
+                  <span data-i18n="navigation.accounts.hint"></span>
+                </button>
+                <button type="button" data-tab="payments" aria-pressed="false">
+                  <span data-i18n="navigation.payments.label"></span>
+                  <span data-i18n="navigation.payments.hint"></span>
+                </button>
+                <button type="button" data-tab="security" aria-pressed="false">
+                  <span data-i18n="navigation.security.label"></span>
+                  <span data-i18n="navigation.security.hint"></span>
+                </button>
+              </nav>
+    
+              <div class="app-body">
+                <section class="tab-panel active" id="tab-accounts" data-i18n="panels.accounts" data-i18n-attr="aria-label">
+                  <div class="cards-grid cols-2" id="accountsGrid" aria-live="polite"></div>
+    
+                  <div class="transactions-panel">
+                    <div class="filter-bar">
+                      <label for="accountFilter" style="font-weight:600;" data-i18n="accounts.filterLabel"></label>
+                      <select id="accountFilter"></select>
+                      <button class="button" id="refreshBtn" type="button" data-i18n="accounts.refresh"></button>
+                      <div style="margin-left:auto; font-size:0.9rem; color:var(--muted);" data-i18n="accounts.pendingHint"></div>
+                    </div>
+    
+                    <div class="transaction-list" id="transactionList"></div>
+                    <div class="spending-summary" id="spendingSummary" aria-live="polite"></div>
+                    <div class="export-actions">
+                      <button class="button" type="button" id="exportCsvBtn" data-i18n="accounts.exportCsv"></button>
+                      <button class="button" type="button" id="exportPdfBtn" data-i18n="accounts.exportPdf"></button>
+                    </div>
+                  </div>
+                </section>
+    
+                <section class="tab-panel" id="tab-payments" data-i18n="panels.payments" data-i18n-attr="aria-label">
+                  <div class="cards-grid cols-2">
+                    <form class="form-card" id="transferForm">
+                      <h3 data-i18n="forms.transfer.title"></h3>
+                      <label for="transferFrom" data-i18n="forms.transfer.from"></label>
+                      <select id="transferFrom" required></select>
+                      <label for="transferTo" data-i18n="forms.transfer.to"></label>
+                      <select id="transferTo" required></select>
+                      <label for="transferAmount" data-i18n="forms.transfer.amount"></label>
+                      <input id="transferAmount" type="number" min="1" step="0.01" required />
+                      <button type="submit" class="button primary" data-i18n="forms.transfer.submit"></button>
+                    </form>
+    
+                    <form class="form-card" id="billForm">
+                      <h3 data-i18n="forms.bill.title"></h3>
+                      <label for="billAccount" data-i18n="forms.bill.payFrom"></label>
+                      <select id="billAccount" required></select>
+                      <label for="billPayee" data-i18n="forms.bill.payee"></label>
+                      <select id="billPayee" required></select>
+                      <label for="billAmount" data-i18n="forms.bill.amount"></label>
+                      <input id="billAmount" type="number" min="1" step="0.01" required />
+                      <label for="billFrequency" data-i18n="forms.bill.frequency"></label>
+                      <select id="billFrequency" required></select>
+                      <button type="submit" class="button primary" data-i18n="forms.bill.submit"></button>
+                    </form>
+    
+                    <form class="form-card" id="sendMoneyForm">
+                      <h3 data-i18n="forms.send.title"></h3>
+                      <label for="sendFrom" data-i18n="forms.send.from"></label>
+                      <select id="sendFrom" required></select>
+                      <label for="sendRecipient" data-i18n="forms.send.recipient"></label>
+                      <input id="sendRecipient" type="text" required data-i18n="forms.send.recipientPlaceholder" data-i18n-attr="placeholder" />
+                      <label for="sendAmount" data-i18n="forms.send.amount"></label>
+                      <input id="sendAmount" type="number" min="1" step="0.01" required />
+                      <label for="sendMethod" data-i18n="forms.send.method"></label>
+                      <select id="sendMethod" required></select>
+                      <label for="sendReference" data-i18n="forms.send.reference"></label>
+                      <input id="sendReference" type="text" data-i18n="forms.send.referencePlaceholder" data-i18n-attr="placeholder" />
+                      <button type="submit" class="button primary" data-i18n="forms.send.submit"></button>
+                    </form>
+    
+                    <form class="form-card" id="newDebitForm">
+                      <h3 data-i18n="forms.debit.title"></h3>
+                      <label for="debitType" data-i18n="forms.debit.type"></label>
+                      <select id="debitType" required>
+                        <option value="directDebit" data-i18n="forms.debit.typeDirectDebit"></option>
+                        <option value="standingOrder" data-i18n="forms.debit.typeStandingOrder"></option>
+                      </select>
+                      <label for="debitName" data-i18n="forms.debit.name"></label>
+                      <input id="debitName" type="text" required data-i18n="forms.debit.namePlaceholder" data-i18n-attr="placeholder" />
+                      <label for="debitAmount" data-i18n="forms.debit.amount"></label>
+                      <input id="debitAmount" type="number" min="1" step="0.01" required />
+                      <label for="debitSchedule" data-i18n="forms.debit.schedule"></label>
+                      <input id="debitSchedule" type="text" required data-i18n="forms.debit.schedulePlaceholder" data-i18n-attr="placeholder" />
+                      <button type="submit" class="button primary" data-i18n="forms.debit.submit"></button>
+                    </form>
+                  </div>
+    
+                  <div class="cards-grid cols-2" style="margin-top:12px;">
+                    <div class="list-card" id="directDebitList">
+                      <h3 data-i18n="mandates.directDebits.title"></h3>
+                      <div id="directDebitItems"></div>
+                    </div>
+                    <div class="list-card" id="standingOrderList">
+                      <h3 data-i18n="mandates.standingOrders.title"></h3>
+                      <div id="standingOrderItems"></div>
+                    </div>
+                  </div>
+                </section>
+    
+                <section class="tab-panel" id="tab-security" data-i18n="panels.security" data-i18n-attr="aria-label">
+                  <div class="cards-grid cols-2">
+                    <div class="card-preview" aria-live="polite">
+                      <div class="line"><span data-i18n="card.preview.name"></span><span id="cardLockBadge" data-i18n="card.preview.badgeActive"></span></div>
+                      <div class="digits">4934 •••• •••• <span id="cardDigits">5126</span></div>
+                      <div class="line"><span data-i18n="card.preview.holder"></span><span>Jordan Rivers</span></div>
+                      <div class="line"><span data-i18n="card.preview.expires"></span><span>07/28</span></div>
+                    </div>
+    
+                    <div class="form-card" id="cardControls">
+                      <h3 data-i18n="card.controls.title"></h3>
+                      <button type="button" class="button" id="lockCardBtn" data-i18n="card.controls.lock"></button>
+                      <button type="button" class="button" id="unlockCardBtn" disabled data-i18n="card.controls.unlock"></button>
+                    </div>
+    
+                    <form class="form-card" id="limitForm">
+                      <h3 data-i18n="limits.title"></h3>
+                      <p class="helper" style="margin:0;" data-i18n="limits.helper"></p>
+                      <div class="limit-summary" id="limitSummary" aria-live="polite"></div>
+                      <label for="limitDaily" data-i18n="limits.daily"></label>
+                      <input id="limitDaily" type="number" min="100" max="5000" step="50" required />
+                      <label for="limitContactless" data-i18n="limits.contactless"></label>
+                      <input id="limitContactless" type="number" min="10" max="500" step="5" required />
+                      <button type="submit" class="button primary" data-i18n="limits.submit"></button>
+                    </form>
+    
+                    <form class="form-card" id="pinForm">
+                      <h3 data-i18n="pin.title"></h3>
+                      <label for="pinNew" data-i18n="pin.new"></label>
+                      <input id="pinNew" type="password" inputmode="numeric" pattern="\d{4}" maxlength="4" required />
+                      <label for="pinConfirm" data-i18n="pin.confirm"></label>
+                      <input id="pinConfirm" type="password" inputmode="numeric" pattern="\d{4}" maxlength="4" required />
+                      <button type="submit" class="button primary" data-i18n="pin.submit"></button>
+                    </form>
+    
+                    <form class="form-card" id="cardRequestForm">
+                      <h3 data-i18n="card.request.title"></h3>
+                      <label for="cardReason" data-i18n="card.request.reason"></label>
+                      <select id="cardReason" required></select>
+                      <label for="deliveryNotes" data-i18n="card.request.delivery"></label>
+                      <textarea id="deliveryNotes" rows="3" data-i18n="card.request.deliveryPlaceholder" data-i18n-attr="placeholder"></textarea>
+                      <button type="submit" class="button primary" data-i18n="card.request.submit"></button>
+                    </form>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </section>
+    
+          <aside data-i18n="sidebar.aria" data-i18n-attr="aria-label" style="display:flex;flex-direction:column;gap:12px;">
+            <section class="task-card" data-i18n="tasks.aria" data-i18n-attr="aria-label">
+              <h2 data-i18n="tasks.title"></h2>
+              <p class="helper" style="margin:0;" data-i18n="tasks.helper"></p>
+              <div class="task-progress" id="taskProgress" aria-live="polite"></div>
+              <ul class="task-list" id="practiceTasksList"></ul>
+              <button type="button" class="button secondary" id="resetTasksBtn" data-i18n="tasks.reset"></button>
+            </section>
+            <div class="prompt-area" id="promptArea" role="status" aria-live="assertive"></div>
+            <section id="sessionNotes" class="card">
+              <h2 data-i18n="session.title"></h2>
+              <ul id="sessionTimeline" aria-live="polite"></ul>
+              <div class="tracker-actions">
+                <button class="button" type="button" id="exportSessionCsvBtn" data-i18n="session.download"></button>
+                <button class="button secondary" type="button" id="clearTimelineBtn" data-i18n="session.clear"></button>
+              </div>
+            </section>
+          </aside>
+        </div>
+    
+        <section id="clinician-notes">
+          <h2 style="margin-top:0;" data-i18n="clinician.title"></h2>
+          <p class="helper" style="margin:.25rem 0 0;" data-i18n="clinician.helper"></p>
+          <textarea id="clinician-comment" data-i18n="clinician.placeholder" data-i18n-attr="placeholder"></textarea>
+        </section>
+  </main>
+</body>
+</html>

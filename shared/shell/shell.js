@@ -1,0 +1,98 @@
+const BRAND_HOME = '../../index.html';
+
+export function mountShell({
+  appTitle,
+  appTagline = '',
+  navLinks = [],
+  includeHomeLink = true,
+  includeHeader = true,
+}) {
+  const root = document.getElementById('app-root') || document.body;
+  root.innerHTML = '';
+
+  const skip = document.createElement('a');
+  skip.href = '#main-content';
+  skip.className = 'app-shell-skip';
+  skip.textContent = 'Skip to content';
+
+  const frame = document.createElement('div');
+  frame.className = 'app-frame';
+
+  const main = document.createElement('main');
+  main.id = 'main-content';
+  main.className = 'main-content';
+
+  const content = document.createElement('div');
+  content.className = 'app-content';
+
+  main.appendChild(content);
+
+  const footer = document.createElement('footer');
+  footer.className = 'app-footer';
+  footer.innerHTML = '<strong>Micro Apps Suite</strong> · Static, offline-friendly practice tools.';
+
+  const children = [skip];
+
+  if (includeHeader) {
+    const header = document.createElement('header');
+    header.className = 'app-header';
+
+    const brand = document.createElement('div');
+    brand.className = 'app-brand';
+
+    const logo = document.createElement('div');
+    logo.className = 'app-logo';
+      logo.textContent = 'MA';
+
+    const meta = document.createElement('div');
+    meta.className = 'app-meta';
+
+    const titleEl = document.createElement('h1');
+    titleEl.textContent = appTitle;
+
+    const taglineEl = document.createElement('p');
+    taglineEl.textContent = appTagline;
+
+    meta.append(titleEl, taglineEl);
+    brand.append(logo, meta);
+
+    const nav = document.createElement('nav');
+    nav.className = 'nav-links';
+    const hasHome = navLinks.some((link) => link.href === BRAND_HOME || link.label === 'Home');
+    const links = includeHomeLink
+      ? hasHome
+        ? navLinks
+        : [{ href: BRAND_HOME, label: 'Home', current: navLinks.length === 0 }, ...navLinks]
+      : navLinks;
+
+    links.forEach((link) => {
+      const a = document.createElement('a');
+      a.href = link.href;
+      a.textContent = link.label;
+      if (link.current) {
+        a.setAttribute('aria-current', 'page');
+      }
+      nav.appendChild(a);
+    });
+
+    header.append(brand, nav);
+    children.push(header);
+  }
+
+  children.push(main, footer);
+
+  frame.append(...children);
+  root.appendChild(frame);
+
+  if (appTitle) {
+    document.title = `${appTitle} | Micro Apps Suite`;
+  }
+
+  return { content, frame };
+}
+
+export function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  const swUrl = new URL('../../sw.js', import.meta.url);
+  navigator.serviceWorker.register(swUrl).catch((error) => console.error('Service worker registration failed', error));
+}

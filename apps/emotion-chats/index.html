@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Emotion Chats | Micro Apps Suite</title>
+  <link rel="stylesheet" href="../../shared/theme.css" />
+  <link rel="stylesheet" href="./app.css" />
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <main id="app-root" class="suite-app">
+    <div class="toolbar" role="region" data-i18n="toolbar.aria" data-i18n-attr="aria-label">
+          <div class="ctrl">
+            <label for="scenario" data-i18n="toolbar.scenario.label">Scenario</label>
+            <select id="scenario"></select>
+          </div>
+          <div class="ctrl">
+            <label for="distractors" data-i18n="toolbar.distractors.label">Distractors per person</label>
+            <select id="distractors">
+              <option>6</option><option selected>8</option><option>10</option><option>12</option><option>14</option>
+            </select>
+          </div>
+    
+          <button class="button primary" id="play" data-i18n="toolbar.play">Play chat</button>
+          <button class="button" id="skip" disabled data-i18n="toolbar.skip">Skip chat</button>
+          <button class="button" id="reset" disabled data-i18n="toolbar.reset">Reset</button>
+          <button class="button" id="download" title="Download CSV of your results" disabled
+                  data-i18n="toolbar.download.label" data-i18n-attr="title">Download CSV</button>
+          <span class="small" id="status" aria-live="polite" data-i18n="toolbar.status.ready">Ready</span>
+        </div>
+    
+        <div class="app-grid">
+          <section class="card" aria-labelledby="chatTitle">
+            <h2 id="chatTitle" data-i18n="sections.chat.title">Chat</h2>
+            <div id="chat" class="chat" aria-label="Chat transcript" aria-live="polite"
+                 data-i18n="sections.chat.aria" data-i18n-attr="aria-label"></div>
+            <div class="footer">
+              <span class="small" id="progress" aria-live="polite" data-i18n="toolbar.status.progress"
+                    data-i18n-current="0" data-i18n-total="0">0 / 0</span>
+              <span class="small" id="timerText"></span>
+            </div>
+          </section>
+    
+          <section class="card" aria-labelledby="respTitle">
+            <h2 id="respTitle" data-i18n="sections.responses.title">Your responses</h2>
+    
+            <div class="step" id="step1">
+              <h3 data-i18n="sections.step1.title">Step 1 — Free choice</h3>
+              <div class="row">
+                <div>
+                  <label class="legend" for="freeA" id="labelA" data-i18n="sections.step1.label">What emotions was {name} feeling?</label>
+                  <textarea id="freeA" data-i18n="sections.step1.placeholder" data-i18n-attr="placeholder"
+                            placeholder="Type one or more emotions…"></textarea>
+                </div>
+                <div>
+                  <label class="legend" for="freeB" id="labelB" data-i18n="sections.step1.label">What emotions was {name} feeling?</label>
+                  <textarea id="freeB" data-i18n="sections.step1.placeholder" data-i18n-attr="placeholder"
+                            placeholder="Type one or more emotions…"></textarea>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <button class="button primary" id="proceed" disabled data-i18n="sections.step1.continue">Continue to Step 2</button>
+              <span class="small" id="step1Hint" data-i18n="sections.step1.hint.wait">Finish the chat, then fill both boxes to proceed.</span>
+            </div>
+    
+            <div class="step" id="step2" hidden>
+              <h3 data-i18n="sections.step2.title">Step 2 — Select emotions (choose all that apply)</h3>
+              <div class="row" style="grid-template-columns:1fr 1fr">
+                <div>
+                  <div class="legend" id="pillTitleA" data-i18n="sections.step2.legend"></div>
+                  <div class="pillgrid" id="pillsA"></div>
+                </div>
+                <div>
+                  <div class="legend" id="pillTitleB" data-i18n="sections.step2.legend"></div>
+                  <div class="pillgrid" id="pillsB"></div>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <button class="button primary" id="submit" disabled data-i18n="sections.step2.submit">Show feedback</button>
+            </div>
+    
+            <div class="step" id="step3" hidden>
+              <h3 data-i18n="sections.step3.title">Step 3 — Feedback</h3>
+              <div class="feedback" id="fbA"></div>
+              <div class="feedback" id="fbB"></div>
+              <div class="tags" id="kpi"></div>
+            </div>
+          </section>
+        </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,98 @@
+[
+  {
+    "slug": "inbox-simulator",
+    "title": "Inbox Simulator",
+    "description": "Practice realistic inbox responses with tone, spelling, and goal guidance.",
+    "tags": ["communication", "functional"],
+    "entryPath": "./apps/inbox-simulator/index.html",
+    "version": "1.0.0",
+    "offlineCapable": true,
+    "lastUpdated": "2026-05-28",
+    "status": "Stable",
+    "thumbnail": "./assets/images/thumbnails/app-placeholder.svg"
+  },
+  {
+    "slug": "metro-nav",
+    "title": "Metro Nav",
+    "description": "Plan a multi-leg journey while balancing time, budget, and route memory.",
+    "tags": ["navigation", "executive"],
+    "entryPath": "./apps/metro-nav/index.html",
+    "version": "1.0.0",
+    "offlineCapable": true,
+    "lastUpdated": "2026-05-28",
+    "status": "Stable",
+    "thumbnail": "./assets/images/thumbnails/app-placeholder.svg"
+  },
+  {
+    "slug": "cafe-rush",
+    "title": "Cafe Rush: Bar Mode",
+    "description": "Assemble cafe drinks quickly while tracking orders and ingredients.",
+    "tags": ["attention", "speed"],
+    "entryPath": "./apps/cafe-rush/index.html",
+    "version": "1.0.0",
+    "offlineCapable": true,
+    "lastUpdated": "2026-05-28",
+    "status": "Stable",
+    "thumbnail": "./assets/images/thumbnails/app-placeholder.svg"
+  },
+  {
+    "slug": "fresh-market",
+    "title": "Fresh Market",
+    "description": "Practice shopping-list, budget, and substitution choices for a family meal.",
+    "tags": ["planning", "functional"],
+    "entryPath": "./apps/fresh-market/index.html",
+    "version": "1.0.0",
+    "offlineCapable": true,
+    "lastUpdated": "2026-05-28",
+    "status": "Stable",
+    "thumbnail": "./assets/images/thumbnails/app-placeholder.svg"
+  },
+  {
+    "slug": "left-anchor-reader",
+    "title": "Left-Anchor Reader",
+    "description": "Read short passages using optional visual anchors for left-sided attention.",
+    "tags": ["attention", "visuospatial"],
+    "entryPath": "./apps/left-anchor-reader/index.html",
+    "version": "1.0.0",
+    "offlineCapable": true,
+    "lastUpdated": "2026-05-28",
+    "status": "Stable",
+    "thumbnail": "./assets/images/thumbnails/app-placeholder.svg"
+  },
+  {
+    "slug": "emotion-chats",
+    "title": "Emotion Chats",
+    "description": "Recognise emotions and intentions in short chat-style vignettes.",
+    "tags": ["social", "language"],
+    "entryPath": "./apps/emotion-chats/index.html",
+    "version": "1.0.0",
+    "offlineCapable": true,
+    "lastUpdated": "2026-05-28",
+    "status": "Stable",
+    "thumbnail": "./assets/images/thumbnails/app-placeholder.svg"
+  },
+  {
+    "slug": "memory-in-action",
+    "title": "Memory in Action",
+    "description": "Watch a brief chat, complete a distractor, then answer recall questions.",
+    "tags": ["memory", "executive"],
+    "entryPath": "./apps/memory-in-action/index.html",
+    "version": "1.0.0",
+    "offlineCapable": true,
+    "lastUpdated": "2026-05-28",
+    "status": "Stable",
+    "thumbnail": "./assets/images/thumbnails/app-placeholder.svg"
+  },
+  {
+    "slug": "brightwave-mobile-banking",
+    "title": "Brightwave Mobile Banking Simulator",
+    "description": "Practice balances, transfers, bills, card controls, and statement exports.",
+    "tags": ["functional", "executive"],
+    "entryPath": "./apps/brightwave-mobile-banking/index.html",
+    "version": "1.0.0",
+    "offlineCapable": true,
+    "lastUpdated": "2026-05-28",
+    "status": "Stable",
+    "thumbnail": "./assets/images/thumbnails/app-placeholder.svg"
+  }
+]

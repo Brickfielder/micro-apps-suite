@@ -1,0 +1,7 @@
+Micro Apps Suite consolidates selected code and assets from:
+
+- Brickfielder/micro-apps at 750a78c154d6782fc441dadaaf9330e3554b3319
+- Brickfielder/micro-apps-repository at af649e1b9fe64da5ac98c17a84d9ba632609a354
+
+Source provenance is preserved in this repository through archive tags named
+`source/micro-apps-main-750a78c` and `source/micro-apps-repository-main-af649e1`.
