@@ -4,152 +4,164 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Café Rush — Bar Mode</title>
-  <meta name="description" content="High-speed barista practice: read the ticket, build drinks fast, and serve before time runs out." />
+  <meta name="description" content="Clinical arcade barista training: read tickets, sequence ingredients, and serve accurately." />
   <link rel="stylesheet" href="../../shared/theme.css" />
   <link rel="stylesheet" href="./app.css" />
   <script defer src="./app.js"></script>
 </head>
 <body>
   <main id="app-root" class="app-frame cafe-rush">
-    <div class="main-layout">
-      <aside class="menu-board" aria-label="Drink menu">
-        <div class="menu-title">Barista Menu</div>
-
-        <section class="menu-section" aria-labelledby="hot-classics">
-          <div id="hot-classics" class="menu-header">Hot Classics</div>
-          <div class="recipe-row"><span class="recipe-name">Espresso</span><span class="recipe-formula">Cup + Esp</span></div>
-          <div class="recipe-row"><span class="recipe-name">Americano</span><span class="recipe-formula">Cup + Esp + Wtr</span></div>
-          <div class="recipe-row"><span class="recipe-name">Latte</span><span class="recipe-formula">Cup + Esp + Milk</span></div>
-          <div class="recipe-row"><span class="recipe-name">Oat Latte</span><span class="recipe-formula">Cup + Esp + Oat</span></div>
-        </section>
-
-        <section class="menu-section" aria-labelledby="syrups">
-          <div id="syrups" class="menu-header">Syrups</div>
-          <div class="recipe-row"><span class="recipe-name">Vanilla...</span><span class="recipe-formula">...add Vanilla</span></div>
-          <div class="recipe-row"><span class="recipe-name">Mocha</span><span class="recipe-formula">...add Choc</span></div>
-        </section>
-
-        <section class="menu-section" aria-labelledby="iced-bar">
-          <div id="iced-bar" class="menu-header">Iced Bar</div>
-          <div class="recipe-row"><span class="recipe-name">Iced [Type]</span><span class="recipe-formula">Iced Cup + Ice + ...</span></div>
-          <div class="recipe-row"><span class="recipe-name">Iced Mocha</span><span class="recipe-formula">Iced Cup + Ice + Esp + Milk + Choc</span></div>
-        </section>
-
-        <div class="rule-box">
-          <strong>TIP:</strong><br />
-          Always start Iced Drinks with an <strong>Iced Cup</strong> and <strong>Ice</strong>.<br />Then add liquid ingredients.
+    <header class="game-topbar" aria-label="Cafe Rush game status">
+      <div class="brand-lockup">
+        <span class="menu-glyph" aria-hidden="true"></span>
+        <span class="brand-cup" aria-hidden="true">☕</span>
+        <div>
+          <h1>Cafe Rush: Bar Mode</h1>
+          <p>Focus • Sequence • Accuracy</p>
         </div>
+      </div>
+      <div class="hud-grid" aria-label="Shift metrics">
+        <div class="hud-item"><span>Shift</span><strong id="shift-num">1</strong></div>
+        <div class="hud-item"><span>Level</span><strong id="level">1</strong></div>
+        <div class="hud-item time"><span>Time</span><strong id="timer">60</strong></div>
+        <div class="hud-item"><span>Accuracy</span><strong id="accuracy">100%</strong></div>
+        <div class="hud-item streak"><span>Streak</span><strong id="streak">x0</strong></div>
+        <div class="hud-item"><span>Score</span><strong id="score">0</strong></div>
+      </div>
+      <div class="top-actions" aria-label="Game controls">
+        <button id="pause-btn" class="icon-button" type="button" aria-label="Pause shift">Ⅱ</button>
+        <button id="reset-btn" class="icon-button" type="button" aria-label="Reset shift">⚙</button>
+      </div>
+    </header>
+
+    <div class="game-shell">
+      <aside class="recipe-panel" aria-label="Recipe reference">
+        <div class="panel-title"><span aria-hidden="true">▧</span> Recipes</div>
+        <div id="recipe-list" class="recipe-list"></div>
+        <button id="recipe-toggle" class="recipe-toggle" type="button" aria-pressed="false">
+          <span aria-hidden="true">◉</span>
+          <span>Show recipe steps</span>
+          <span aria-hidden="true">◌</span>
+        </button>
       </aside>
 
-      <section class="game-area" id="game-bg">
-        <div class="hud-bar">
-          <div class="stat-box">
-            <span class="stat-label">Time Remaining</span>
-            <span class="stat-value" id="timer">60</span>
+      <section class="bar-stage" id="game-bg" aria-labelledby="order-text">
+        <div class="bar-photo" aria-hidden="true"></div>
+        <div class="ticket-rail" aria-live="polite">
+          <div class="ticket" id="ticket-display">
+            <span>Order #<span id="order-num">100</span></span>
+            <h2 id="order-text">Waiting...</h2>
           </div>
-          <div class="stat-box">
-            <span class="stat-label">Orders Filled</span>
-            <span class="stat-value" id="score">0</span>
+        </div>
+        <div class="build-scene">
+          <div class="focus-board" aria-hidden="true">Focus<br />Sequence<br />Accuracy</div>
+          <div class="cup-mat">
+            <div id="cup-visual" class="cup" aria-live="polite" aria-label="Drink build">
+              <div class="cup-contents" id="cup-contents"></div>
+            </div>
+          </div>
+          <div class="pitcher" aria-hidden="true"></div>
+          <div class="sequence-lock" id="sequence-lock">
+            <span aria-hidden="true">▣</span>
+            <span id="sequence-hint">Build the drink in the correct order</span>
           </div>
         </div>
 
-        <div class="rail-container">
-          <div class="ticket-rail-metal">
-            <div class="ticket" id="ticket-display" aria-live="polite">
-              <h3>Order #<span id="order-num">101</span></h3>
-              <h1 id="order-text">Waiting...</h1>
-            </div>
-          </div>
+        <div class="ingredient-dock" aria-label="Ingredient controls">
+          <button class="ingredient-btn" type="button" data-ingredient="hot-cup"><span aria-hidden="true">☕</span><strong>Hot Cup</strong></button>
+          <button class="ingredient-btn" type="button" data-ingredient="iced-cup"><span aria-hidden="true">🥤</span><strong>Iced Cup</strong></button>
+          <button class="ingredient-btn" type="button" data-ingredient="espresso"><span aria-hidden="true">🟤</span><strong>Espresso</strong></button>
+          <button class="ingredient-btn" type="button" data-ingredient="ice"><span aria-hidden="true">🧊</span><strong>Ice</strong></button>
+          <button class="ingredient-btn" type="button" data-ingredient="milk"><span aria-hidden="true">🥛</span><strong>Milk</strong></button>
+          <button class="ingredient-btn" type="button" data-ingredient="oat"><span aria-hidden="true">🌾</span><strong>Oat</strong></button>
+          <button class="ingredient-btn" type="button" data-ingredient="water"><span aria-hidden="true">💧</span><strong>Water</strong></button>
+          <button class="ingredient-btn" type="button" data-ingredient="vanilla"><span aria-hidden="true">✳</span><strong>Vanilla</strong></button>
+          <button class="ingredient-btn" type="button" data-ingredient="cocoa"><span aria-hidden="true">▰</span><strong>Chocolate</strong></button>
+          <button class="serve-btn" id="serve-btn" type="button">Serve Order</button>
         </div>
 
-        <div class="counter-surface">
-          <div class="cup-zone">
-            <div class="cup-mat">
-              <div id="cup-visual" class="cup" aria-live="polite" aria-label="Drink build">
-                <div class="cup-contents" id="cup-contents"></div>
-              </div>
-            </div>
+        <p class="stage-tip"><span aria-hidden="true">ⓘ</span> Tap ingredients in the correct sequence, then serve the drink.</p>
+      </section>
+
+      <aside class="orders-panel" aria-label="Orders and coaching">
+        <section class="orders-card">
+          <div class="panel-title"><span aria-hidden="true">▤</span> Orders (<span id="queue-count">0</span>)</div>
+          <div id="order-queue" class="order-queue"></div>
+        </section>
+
+        <section class="coach-card">
+          <div class="panel-title"><span aria-hidden="true">◇</span> Coach</div>
+          <div class="coach-body">
+            <span class="coach-icon" aria-hidden="true">♧</span>
+            <p id="coach-message">Take a breath. Check the order number and build one step at a time.</p>
           </div>
+          <div class="coach-dots" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </section>
+      </aside>
+    </div>
 
-          <div class="station-controls" aria-label="Ingredient controls">
-            <button class="btn-machine" type="button" data-ingredient="hot-cup">
-              <span aria-hidden="true">☕</span>
-              <label>Hot Cup</label>
-            </button>
-            <button class="btn-machine" type="button" data-ingredient="iced-cup">
-              <span aria-hidden="true">🥤</span>
-              <label>Iced Cup</label>
-            </button>
-            <button class="btn-machine" type="button" data-ingredient="espresso">
-              <span aria-hidden="true">🟤</span>
-              <label>Espresso</label>
-            </button>
-            <button class="btn-machine" type="button" data-ingredient="ice">
-              <span aria-hidden="true">🧊</span>
-              <label>Ice</label>
-            </button>
+    <footer class="game-footer" aria-label="Shift progress and feedback">
+      <section class="goal-card">
+        <div class="goal-head">
+          <strong><span aria-hidden="true">◎</span> Shift goal: serve <span id="goal-count">8</span> accurate drinks</strong>
+          <span id="goal-percent">0%</span>
+        </div>
+        <div class="goal-track" aria-hidden="true"><span id="goal-fill"></span></div>
+        <p>Progress: <span id="goal-progress">0 / 8</span></p>
+      </section>
 
-            <button class="btn-machine" type="button" data-ingredient="milk">
-              <span aria-hidden="true">🥛</span>
-              <label>Milk</label>
-            </button>
-            <button class="btn-machine" type="button" data-ingredient="oat">
-              <span aria-hidden="true">🌾</span>
-              <label>Oat</label>
-            </button>
-            <button class="btn-machine" type="button" data-ingredient="water">
-              <span aria-hidden="true">💧</span>
-              <label>Water</label>
-            </button>
-            <button class="btn-machine" type="button" data-ingredient="vanilla">
-              <span aria-hidden="true">🟡</span>
-              <label>Vanilla</label>
-            </button>
-
-            <button class="btn-machine" type="button" data-ingredient="cocoa">
-              <span aria-hidden="true">🍫</span>
-              <label>Choc</label>
-            </button>
-            <div class="machine-footnote" aria-hidden="true">SPEED BAR v2.1 (NEUTRAL)</div>
-            <button class="btn-serve" id="serve-btn" type="button">🛎️ Serve Order</button>
-          </div>
+      <section class="feedback-card" id="feedback-card" aria-live="polite">
+        <div class="feedback-mark" id="feedback-mark" aria-hidden="true">✓</div>
+        <div>
+          <strong id="feedback-title">Ready for the first ticket</strong>
+          <p id="feedback-detail">Start the shift, then follow each recipe in sequence.</p>
+        </div>
+        <div class="feedback-points" id="feedback-points">+0</div>
+        <div class="combo-row">
+          <span>Combo meter</span>
+          <div class="combo-meter" id="combo-meter" aria-hidden="true"></div>
+          <strong id="combo-label">x0</strong>
         </div>
       </section>
-    </div>
+
+      <section class="badges-card">
+        <h2>Results Preview</h2>
+        <div id="badge-preview" class="badge-preview"></div>
+      </section>
+    </footer>
   </main>
 
   <div id="modal-start" class="overlay">
     <div class="modal" role="dialog" aria-labelledby="start-heading" aria-modal="true">
-      <h1 id="start-heading" style="color:var(--text); margin-bottom:0;">CAFÉ RUSH</h1>
-      <h3 style="color:var(--accent); margin-top:5px;">Bar Mode</h3>
-      <p style="color:var(--text-light)">Processing speed training in a high-pressure environment.</p>
-      <hr style="border:none; border-top:1px solid #e2e8f0; margin: 20px 0;" />
-      <p style="text-align:left; font-size:14px; color:var(--text); line-height:1.6;">
-        1. Read the ticket.<br />
-        2. Consult the menu on the left.<br />
-        3. Tap ingredients to build.<br />
-        4. Serve before the timer runs out.
-      </p>
-      <div class="modal-actions">
-        <button class="btn-start" id="start-btn" type="button">Start Shift</button>
+      <h2 id="start-heading">Cafe Rush: Bar Mode</h2>
+      <p>Serve 8 accurate drinks. Accuracy matters more than raw speed.</p>
+      <div class="instruction-grid">
+        <span>1. Read the active ticket.</span>
+        <span>2. Build ingredients in sequence.</span>
+        <span>3. Serve when the drink matches.</span>
+        <span>4. Protect your streak and patience.</span>
       </div>
+      <button class="primary-action" id="start-btn" type="button">Start Shift</button>
     </div>
   </div>
 
   <div id="modal-end" class="overlay hidden">
-    <div class="modal" role="dialog" aria-labelledby="end-heading" aria-modal="true">
+    <div class="modal results-modal" role="dialog" aria-labelledby="end-heading" aria-modal="true">
       <h2 id="end-heading">Shift Complete</h2>
-      <div style="font-size:60px; font-weight:900; color:var(--accent);" id="final-score">0</div>
-      <p style="color:var(--text-light); font-weight:bold; text-transform:uppercase;">Orders Served</p>
-
-      <div style="background:#f1f5f9; padding:15px; border-radius:4px; margin:20px 0; text-align:left;">
-        <div>Speed: <strong style="float:right" id="stat-speed">0s</strong></div>
-        <div style="margin-top:5px;">Accuracy: <strong style="float:right" id="stat-acc">100%</strong></div>
+      <div class="final-score" id="final-score">0</div>
+      <p>Final score</p>
+      <div class="results-grid">
+        <div><span>Orders served</span><strong id="stat-served">0</strong></div>
+        <div><span>Accuracy</span><strong id="stat-acc">100%</strong></div>
+        <div><span>Avg time</span><strong id="stat-speed">0s</strong></div>
+        <div><span>Best streak</span><strong id="stat-streak">x0</strong></div>
+        <div><span>Mistakes</span><strong id="stat-mistakes">0</strong></div>
+        <div><span>Level reached</span><strong id="stat-level">1</strong></div>
       </div>
-
+      <div id="final-badges" class="final-badges"></div>
       <div class="modal-actions">
-        <button class="btn-start" id="restart-btn" type="button">New Shift</button>
-        <button class="btn-outline" id="download-btn" type="button">Download Report</button>
+        <button class="primary-action" id="restart-btn" type="button">New Shift</button>
+        <button class="secondary-action" id="download-btn" type="button">Download Report</button>
       </div>
     </div>
   </div>
