@@ -72,6 +72,7 @@ function initScene() {
   scene.fog = new THREE.FogExp2(0xb3e5fc, 0.015); // soft haze
   
   camera = new THREE.PerspectiveCamera(58, canvas.clientWidth / canvas.clientHeight, 0.1, 80);
+  scene.add(camera); // Add camera to scene to render camera children (floating Sky Arrow)
   renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.shadowMap.enabled = true;
@@ -486,7 +487,9 @@ function addFountain() {
 
 function addSkyArrow() {
   const group = new THREE.Group();
-  group.position.set(0, 2.4, 1.2); // Center-south of the fountain, floating lower above the path
+  // Local position relative to camera (perfectly centered, floating upper viewport, in front of gaze)
+  group.position.set(0, 0.36, -1.5); 
+  group.scale.set(0.38, 0.38, 0.38); // Scaled down to serve as a beautiful floating HUD guide
   group.name = 'sky-arrow';
   group.visible = false; // Starts invisible
   
@@ -514,7 +517,8 @@ function addSkyArrow() {
   head.castShadow = true;
   group.add(head);
   
-  scene.add(group);
+  // Add directly to the camera so it rotates and moves with the user's view
+  camera.add(group);
   skyArrow = group;
 }
 
@@ -1593,7 +1597,8 @@ function tick(time) {
   
   // Pulsing and floating 3D neon sky arrow
   if (skyArrow && skyArrow.visible) {
-    skyArrow.position.y = 2.4 + Math.sin(time * 0.003) * 0.1;
+    // Floats subtly by 4 centimeters in front of the camera
+    skyArrow.position.y = 0.36 + Math.sin(time * 0.003) * 0.04;
     if (skyArrowMaterial) {
       skyArrowMaterial.emissiveIntensity = 0.5 + Math.sin(time * 0.006) * 0.3;
     }
