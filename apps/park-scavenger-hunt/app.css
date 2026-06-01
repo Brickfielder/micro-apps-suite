@@ -659,43 +659,220 @@ body {
 }
 
 @media (max-width: 760px) {
+  /* Prevent vertical document scroll, fill height */
+  body {
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  .park-app {
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Bottom Navigation Tab Bar is visible on narrow screens */
+  .mobile-tabs {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: var(--park-surface);
+    border-top: 1px solid var(--park-border);
+    box-shadow: 0 -4px 16px rgba(46, 125, 50, 0.06);
+    z-index: 100;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+  }
+
+  .mobile-tab-btn {
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    height: 100%;
+    color: #757575;
+    cursor: pointer;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 3px;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+  }
+
+  .mobile-tab-btn.active {
+    color: var(--park-green);
+    background-color: var(--park-green-light);
+  }
+
+  .mobile-tab-btn .tab-icon {
+    font-size: 1.25rem;
+  }
+
+  .mobile-tab-btn .tab-label {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Compact layout for headers on mobile devices */
   .park-header {
+    padding: 6px 12px;
+    gap: 6px;
     flex-direction: column;
     align-items: stretch;
-    padding: 12px 16px;
+    box-shadow: 0 2px 10px rgba(46, 125, 50, 0.04);
   }
+
+  .header-brand .brand {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  .header-brand .scenario-copy {
+    font-size: 0.7rem;
+    text-align: center;
+  }
+
+  .rehab-tools {
+    gap: 4px;
+    justify-content: center;
+  }
+
+  .btn-tool {
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    min-height: auto;
+  }
+
   .status-strip {
+    gap: 12px;
     justify-content: space-between;
   }
+
+  .status-strip span {
+    font-size: 0.6rem;
+  }
+
+  .status-strip strong {
+    font-size: 0.95rem;
+  }
+
+  /* Layout fills exactly the remaining height between Header and Tab Bar */
   .park-layout {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 350px auto;
+    grid-template-rows: 1fr;
+    height: calc(100vh - 124px); /* Subtract Header height (~64px) and Tab-Bar height (60px) */
+    padding: 0;
+    gap: 0;
+    overflow: hidden;
+    margin-bottom: 60px; /* Tab-bar clearance */
   }
-  .task-panel {
-    max-height: 200px;
-  }
+
+  /* Hide panels by default on mobile unless active */
+  .task-panel,
+  .scene-shell,
   .stats-panel {
-    grid-column: 1;
+    display: none !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: none !important;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+
+  /* Display only the active tab panel */
+  .task-panel.tab-visible,
+  .scene-shell.tab-visible,
+  .stats-panel.tab-visible {
+    display: flex !important;
+  }
+
+  /* Full screen viewport fit for 3D exploration zone */
+  .scene-shell {
     flex-direction: column;
-    align-items: stretch;
+    position: relative;
+    overflow: hidden;
   }
-  .metrics-grid {
-    grid-template-columns: 1fr;
+
+  /* Make canvas fill container height */
+  #park-canvas {
+    height: 100%;
+    width: 100%;
   }
-  .stats-footer {
-    flex-direction: column;
-    margin-top: 12px;
+
+  /* Center and refit the inspect panel above touch buttons and tabs */
+  .item-panel {
+    left: 12px;
+    right: 12px;
+    bottom: 84px; /* Perfectly elevated above scene footer and tab bar */
+    width: auto;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
   }
+
+  /* Larger, easier tap targets for touch controls on mobile */
+  .touch-controls {
+    display: grid !important;
+    grid-template-columns: repeat(3, 62px);
+    grid-template-rows: repeat(2, 48px);
+    gap: 8px;
+  }
+
+  .touch-controls button {
+    font-size: 1.65rem;
+    border-radius: 10px;
+  }
+
+  /* Scene footer adjustments for mobile layout */
   .scene-footer {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.92);
   }
+
   #interaction-hint {
-    max-width: 100%;
-    text-align: center;
-    margin-bottom: 8px;
+    max-width: 48%;
+    font-size: 0.72rem;
+    text-align: left;
+    margin-bottom: 0;
   }
+
+  /* Overlay modals on mobile devices */
+  .card-modal {
+    width: 92%;
+    padding: 16px;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  .intro-card ul {
+    padding-left: 18px;
+    font-size: 0.8rem;
+  }
+
+  .report-card {
+    padding: 16px;
+    width: 95%;
+  }
+
   .report-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* Bottom Navigation Tab Bar (Hidden on desktop by default) */
+.mobile-tabs {
+  display: none;
 }

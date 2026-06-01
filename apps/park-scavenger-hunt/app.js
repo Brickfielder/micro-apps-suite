@@ -404,3 +404,60 @@ window.PARK_APP = {
   triggerInspectItem,
   logCameraDirection
 };
+
+// Mobile browser & touch interface detection
+function checkMobileDevice() {
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                   ('ontouchstart' in window) || 
+                   (navigator.maxTouchPoints > 0);
+                   
+  if (isMobile) {
+    document.body.classList.add('mobile-detected');
+    // Ensure 3D explore view is visible by default
+    const sceneShell = document.querySelector('.scene-shell');
+    if (sceneShell) sceneShell.classList.add('tab-visible');
+  }
+}
+
+// Mobile Tab Bar navigation controller
+function initMobileNavigation() {
+  const tabs = document.querySelectorAll('.mobile-tab-btn');
+  const taskPanel = document.querySelector('.task-panel');
+  const sceneShell = document.querySelector('.scene-shell');
+  const statsPanel = document.querySelector('.stats-panel');
+  
+  if (tabs.length === 0) return;
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Deactivate all tab buttons
+      tabs.forEach(t => t.classList.remove('active'));
+      // Activate selected tab
+      tab.classList.add('active');
+      
+      const targetTab = tab.dataset.tab;
+      
+      // Hide all panels by default on mobile
+      if (taskPanel) taskPanel.classList.remove('tab-visible');
+      if (sceneShell) sceneShell.classList.remove('tab-visible');
+      if (statsPanel) statsPanel.classList.remove('tab-visible');
+      
+      // Show selected panel
+      if (targetTab === 'explore' && sceneShell) {
+        sceneShell.classList.add('tab-visible');
+        // Trigger Three.js resize to update rendering aspect ratio
+        if (window.dispatchEvent) {
+          window.dispatchEvent(new Event('resize'));
+        }
+      } else if (targetTab === 'checklist' && taskPanel) {
+        taskPanel.classList.add('tab-visible');
+      } else if (targetTab === 'stats' && statsPanel) {
+        statsPanel.classList.add('tab-visible');
+      }
+    });
+  });
+}
+
+// Initialize mobile optimizations on script load
+checkMobileDevice();
+initMobileNavigation();

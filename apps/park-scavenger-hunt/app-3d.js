@@ -1533,7 +1533,7 @@ function bindEvents() {
   // Resize handler
   window.addEventListener('resize', resizeRenderer);
   
-  // Touch nav mapping
+  // Touch nav mapping (rehab patient friendly with runaway prevention)
   const touchPanel = document.querySelector('.touch-controls');
   if (touchPanel) {
     touchPanel.querySelectorAll('button').forEach(btn => {
@@ -1541,15 +1541,23 @@ function bindEvents() {
       btn.addEventListener('touchstart', e => {
         e.preventDefault();
         appState.touchMove = action;
-      });
+      }, { passive: false });
       btn.addEventListener('touchend', e => {
         e.preventDefault();
         appState.touchMove = null;
-      });
-      btn.addEventListener('mousedown', () => {
+      }, { passive: false });
+      btn.addEventListener('touchcancel', e => {
+        e.preventDefault();
+        appState.touchMove = null;
+      }, { passive: false });
+      btn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
         appState.touchMove = action;
       });
       btn.addEventListener('mouseup', () => {
+        appState.touchMove = null;
+      });
+      btn.addEventListener('mouseleave', () => {
         appState.touchMove = null;
       });
     });

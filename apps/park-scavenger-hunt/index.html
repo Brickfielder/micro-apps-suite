@@ -49,7 +49,7 @@
       </aside>
 
       <!-- 3D Park Scene -->
-      <section class="scene-shell" aria-label="3D Park Environment">
+      <section class="scene-shell tab-visible" aria-label="3D Park Environment">
         <canvas id="park-canvas"></canvas>
         <div id="toast" class="toast hidden"></div>
 
@@ -103,6 +103,22 @@
         </div>
       </aside>
     </main>
+
+    <!-- Mobile Navigation Tab Bar -->
+    <nav class="mobile-tabs" aria-label="Mobile Navigation">
+      <button class="mobile-tab-btn active" data-tab="explore" type="button">
+        <span class="tab-icon">🌲</span>
+        <span class="tab-label">Explore</span>
+      </button>
+      <button class="mobile-tab-btn" data-tab="checklist" type="button">
+        <span class="tab-icon">📋</span>
+        <span class="tab-label">Checklist</span>
+      </button>
+      <button class="mobile-tab-btn" data-tab="stats" type="button">
+        <span class="tab-icon">📊</span>
+        <span class="tab-label">Metrics</span>
+      </button>
+    </nav>
   </div>
 
   <!-- Instruction Splash Overlay -->
