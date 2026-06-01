@@ -40,7 +40,7 @@
         <div id="shopping-list" class="shopping-list"></div>
       </aside>
 
-      <section class="scene-shell" aria-label="3D supermarket navigation">
+      <section class="scene-shell tab-visible" aria-label="3D supermarket navigation">
         <canvas id="market-canvas"></canvas>
         <div id="toast" class="toast hidden"></div>
 
@@ -79,6 +79,22 @@
         </div>
       </aside>
     </main>
+
+    <!-- Mobile Navigation Tab Bar -->
+    <nav class="mobile-tabs" aria-label="Mobile Navigation">
+      <button class="mobile-tab-btn active" data-tab="explore" type="button">
+        <span class="tab-icon">🌲</span>
+        <span class="tab-label">Explore</span>
+      </button>
+      <button class="mobile-tab-btn" data-tab="checklist" type="button">
+        <span class="tab-icon">📋</span>
+        <span class="tab-label">Checklist</span>
+      </button>
+      <button class="mobile-tab-btn" data-tab="metrics" type="button">
+        <span class="tab-icon">📊</span>
+        <span class="tab-label">Metrics</span>
+      </button>
+    </nav>
   </div>
 
   <div id="intro-screen" class="overlay">

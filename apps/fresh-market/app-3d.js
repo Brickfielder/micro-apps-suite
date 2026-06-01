@@ -83,6 +83,10 @@ let canvas;
 let itemMeshes = [];
 let colliders = [];
 
+let tileTexture;
+let woodTexture;
+let metalTexture;
+
 const els = {
   budgetLimit: document.getElementById('budget-limit'),
   totalVal: document.getElementById('total-val'),
@@ -450,9 +454,14 @@ function initScene() {
   renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   raycaster = new THREE.Raycaster();
   pointer = new THREE.Vector2();
+
+  tileTexture = createTileTexture();
+  woodTexture = createWoodTexture();
+  metalTexture = createMetalTexture();
 
   addLighting();
   addMarketGeometry();
@@ -466,22 +475,33 @@ function initScene() {
 }
 
 function addLighting() {
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x9fb0b5, 2.3));
-  const light = new THREE.DirectionalLight(0xffffff, 2.1);
-  light.position.set(3, 7, 4);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x9fb0b5, 1.8));
+  
+  const light = new THREE.DirectionalLight(0xffffff, 1.6);
+  light.position.set(4, 9, 5);
   light.castShadow = true;
+  light.shadow.mapSize.width = 2048;
+  light.shadow.mapSize.height = 2048;
+  light.shadow.camera.near = 0.5;
+  light.shadow.camera.far = 25;
+  light.shadow.camera.left = -10;
+  light.shadow.camera.right = 10;
+  light.shadow.camera.top = 10;
+  light.shadow.camera.bottom = -10;
+  light.shadow.bias = -0.0005;
   scene.add(light);
+  
+  scene.add(new THREE.AmbientLight(0xffffff, 0.45));
 }
 
 function addMarketGeometry() {
   const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(18, 16),
-    new THREE.MeshStandardMaterial({ color: 0xf4f6f5, roughness: 0.92 })
+    new THREE.MeshStandardMaterial({ map: tileTexture, roughness: 0.85 })
   );
   floor.rotation.x = -Math.PI / 2;
   floor.receiveShadow = true;
   scene.add(floor);
-  addFloorTiles();
 
   addWall(0, -8.05, 18, 0.18);
   addWall(-9.05, 0, 0.18, 16);
@@ -502,17 +522,7 @@ function addMarketGeometry() {
 }
 
 function addFloorTiles() {
-  const lineMaterial = new THREE.MeshBasicMaterial({ color: 0xd7e1e4 });
-  for (let x = -8; x <= 8; x += 2) {
-    const line = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.012, 16), lineMaterial);
-    line.position.set(x, 0.018, 0);
-    scene.add(line);
-  }
-  for (let z = -7; z <= 7; z += 2) {
-    const line = new THREE.Mesh(new THREE.BoxGeometry(18, 0.012, 0.025), lineMaterial);
-    line.position.set(0, 0.019, z);
-    scene.add(line);
-  }
+  // Overridden by procedural terrazzo tile texture.
 }
 
 function addOverheadLights() {
@@ -553,7 +563,7 @@ function addEntrance() {
 function addShelf(x, z, width, depth, color, label) {
   const base = new THREE.Mesh(
     new THREE.BoxGeometry(width, 0.85, depth),
-    new THREE.MeshStandardMaterial({ color, roughness: 0.66 })
+    new THREE.MeshStandardMaterial({ map: woodTexture, color, roughness: 0.75 })
   );
   base.position.set(x, 0.42, z);
   base.castShadow = true;
@@ -562,14 +572,14 @@ function addShelf(x, z, width, depth, color, label) {
 
   const top = new THREE.Mesh(
     new THREE.BoxGeometry(width, 0.08, depth + 0.08),
-    new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 })
+    new THREE.MeshStandardMaterial({ map: metalTexture, color: 0xffffff, roughness: 0.48 })
   );
   top.position.set(x, 0.94, z);
   scene.add(top);
 
   const backRail = new THREE.Mesh(
     new THREE.BoxGeometry(width + 0.1, 0.42, 0.08),
-    new THREE.MeshStandardMaterial({ color: 0xe8eef0, roughness: 0.58 })
+    new THREE.MeshStandardMaterial({ map: woodTexture, color: 0xe8eef0, roughness: 0.72 })
   );
   backRail.position.set(x, 1.14, z + depth / 2 + 0.14);
   backRail.castShadow = true;
@@ -578,7 +588,7 @@ function addShelf(x, z, width, depth, color, label) {
 
   const priceRail = new THREE.Mesh(
     new THREE.BoxGeometry(width + 0.08, 0.08, 0.06),
-    new THREE.MeshStandardMaterial({ color: 0xf7fafb, roughness: 0.5 })
+    new THREE.MeshStandardMaterial({ map: metalTexture, color: 0xf7fafb, roughness: 0.42 })
   );
   priceRail.position.set(x, 1.02, z - depth / 2 - 0.02);
   priceRail.castShadow = true;
@@ -594,7 +604,7 @@ function addShelf(x, z, width, depth, color, label) {
 function addDisplaySurface(x, z, width, depth, color) {
   const stand = new THREE.Mesh(
     new THREE.BoxGeometry(width, 0.2, depth),
-    new THREE.MeshStandardMaterial({ color, roughness: 0.62 })
+    new THREE.MeshStandardMaterial({ map: woodTexture, color, roughness: 0.7 })
   );
   stand.position.set(x, 0.78, z);
   stand.castShadow = true;
@@ -603,7 +613,7 @@ function addDisplaySurface(x, z, width, depth, color) {
 
   const top = new THREE.Mesh(
     new THREE.BoxGeometry(width + 0.08, 0.06, depth + 0.08),
-    new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.52 })
+    new THREE.MeshStandardMaterial({ map: metalTexture, color: 0xffffff, roughness: 0.4 })
   );
   top.position.set(x, 0.94, z);
   top.receiveShadow = true;
@@ -613,7 +623,7 @@ function addDisplaySurface(x, z, width, depth, color) {
 function addCheckout() {
   const counter = new THREE.Mesh(
     new THREE.BoxGeometry(3.1, 0.85, 1.05),
-    new THREE.MeshStandardMaterial({ color: 0x526d74, roughness: 0.7 })
+    new THREE.MeshStandardMaterial({ map: woodTexture, color: 0x526d74, roughness: 0.7 })
   );
   counter.position.set(5.1, 0.42, -5.25);
   counter.castShadow = true;
@@ -623,7 +633,7 @@ function addCheckout() {
 
   const belt = new THREE.Mesh(
     new THREE.BoxGeometry(1.5, 0.06, 0.72),
-    new THREE.MeshStandardMaterial({ color: 0x202c31, roughness: 0.42 })
+    new THREE.MeshStandardMaterial({ map: metalTexture, color: 0x202c31, metalness: 0.6, roughness: 0.38 })
   );
   belt.position.set(5.28, 0.9, -5.25);
   belt.castShadow = true;
@@ -631,21 +641,21 @@ function addCheckout() {
 
   const baggingArea = new THREE.Mesh(
     new THREE.BoxGeometry(0.7, 0.05, 0.66),
-    new THREE.MeshStandardMaterial({ color: 0xdce5e8, roughness: 0.5 })
+    new THREE.MeshStandardMaterial({ map: metalTexture, color: 0xdce5e8, metalness: 0.8, roughness: 0.22 })
   );
   baggingArea.position.set(6.12, 0.91, -5.25);
   scene.add(baggingArea);
 
   const till = new THREE.Mesh(
     new THREE.BoxGeometry(0.55, 0.32, 0.42),
-    new THREE.MeshStandardMaterial({ color: 0x202c31, roughness: 0.4 })
+    new THREE.MeshStandardMaterial({ map: metalTexture, color: 0x202c31, metalness: 0.5, roughness: 0.4 })
   );
   till.position.set(4.45, 1.05, -5.25);
   scene.add(till);
 
   const scanner = new THREE.Mesh(
     new THREE.BoxGeometry(0.22, 0.07, 0.28),
-    new THREE.MeshStandardMaterial({ color: 0x167c8c, roughness: 0.45 })
+    new THREE.MeshStandardMaterial({ map: metalTexture, color: 0x167c8c, metalness: 0.6, roughness: 0.32 })
   );
   scanner.position.set(4.82, 0.98, -5.02);
   scanner.castShadow = true;
@@ -797,8 +807,12 @@ function createFruitModel(id, color) {
     [-0.16, 0, 0.16].forEach((offset, index) => {
       const banana = createMesh(new THREE.TorusGeometry(0.18, 0.045, 10, 28, Math.PI * 1.22), color, [offset, 1.19, 0], [1, 0.62, 1], [0.55, 0, index * 0.35]);
       group.add(banana);
+      // Dark tips for high fidelity bananas
+      const tip = createMesh(new THREE.SphereGeometry(0.038, 8, 8), 0x3e2723, [offset + 0.11, 1.05 + index * 0.05, 0.08]);
+      group.add(tip);
     });
-    group.add(createMesh(new THREE.CylinderGeometry(0.025, 0.025, 0.18, 8), 0x5a3a20, [0.04, 1.33, 0], [1, 1, 1], [0.8, 0, 0.2]));
+    // Volumetric crown stem
+    group.add(createMesh(new THREE.CylinderGeometry(0.025, 0.035, 0.18, 8), 0x3e2723, [0.04, 1.33, 0], [1, 1, 1], [0.8, 0, 0.2]));
     return [group];
   }
 
@@ -819,15 +833,25 @@ function createDairyModel(id, color) {
     const height = id === 'small-milk' ? 0.48 : id === 'milk-2l' ? 0.82 : 0.66;
     const radius = id === 'small-milk' ? 0.13 : 0.16;
     const baseY = 0.98;
-    group.add(createMesh(new THREE.CylinderGeometry(radius, radius * 1.08, height, 28), color, [0, baseY + height / 2, 0]));
-    group.add(createMesh(new THREE.CylinderGeometry(radius * 0.55, radius * 0.6, 0.18, 24), color, [0, baseY + height + 0.04, 0]));
-    group.add(createMesh(new THREE.CylinderGeometry(radius * 0.5, radius * 0.5, 0.08, 24), 0x2f75b5, [0, baseY + height + 0.17, 0]));
+    const isSkimmed = id === 'milk-2l';
+    const capColor = isSkimmed ? 0x1976d2 : 0xd32f2f; // blue cap or red cap
+    
+    // Volumetric bottle body (semi-opaque)
+    group.add(createMesh(new THREE.CylinderGeometry(radius, radius * 1.08, height, 28), 0xfafafa, [0, baseY + height / 2, 0], [1, 1, 1], [0, 0, 0], 0.35, 0.95));
+    // Tapered neck
+    group.add(createMesh(new THREE.CylinderGeometry(radius * 0.55, radius * 0.6, 0.18, 24), 0xfafafa, [0, baseY + height + 0.04, 0]));
+    // Cap
+    group.add(createMesh(new THREE.CylinderGeometry(radius * 0.5, radius * 0.5, 0.08, 24), capColor, [0, baseY + height + 0.17, 0], [1, 1, 1], [0, 0, 0], 0.4));
+    // Label band
     group.add(createMesh(new THREE.BoxGeometry(radius * 1.55, 0.16, 0.018), 0xffffff, [0, baseY + height * 0.55 + 0.05, -radius - 0.012]));
+    // High aesthetic handle
+    group.add(createMesh(new THREE.CylinderGeometry(0.018, 0.018, height * 0.48, 8), 0xfafafa, [radius * 0.72, baseY + height * 0.55, 0], [1, 1, 1], [0, 0, 0.28]));
     return [group];
   }
 
+  // Volumetric Cream Pack
   group.add(createPacket(color, 0.34, 0.58, 0.24, 1.18, 'Cream'));
-  group.add(createMesh(new THREE.CylinderGeometry(0.06, 0.06, 0.06, 16), 0x2f75b5, [0.08, 1.53, -0.04]));
+  group.add(createMesh(new THREE.CylinderGeometry(0.06, 0.06, 0.06, 16), 0x1976d2, [0.08, 1.53, -0.04]));
   return [group];
 }
 
@@ -838,8 +862,8 @@ function createCheeseModel(color) {
   wedge.lineTo(-0.05, 0.26);
   wedge.lineTo(-0.26, -0.18);
   const geometry = new THREE.ExtrudeGeometry(wedge, { depth: 0.34, bevelEnabled: true, bevelSize: 0.025, bevelThickness: 0.02, bevelSegments: 2 });
-  const mesh = createMesh(geometry, color, [-0.04, 1.18, 0.17], [1, 1, 1], [0, 0.2, 0]);
-  const rind = createMesh(new THREE.BoxGeometry(0.08, 0.34, 0.36), 0xd88925, [-0.26, 1.2, 0], [1, 1, 1], [0.1, 0.25, 0]);
+  const mesh = createMesh(geometry, color, [-0.04, 1.18, 0.17], [1, 1, 1], [0, 0.2, 0], 0.52);
+  const rind = createMesh(new THREE.BoxGeometry(0.08, 0.34, 0.36), 0xb75b1c, [-0.26, 1.2, 0], [1, 1, 1], [0.1, 0.25, 0], 0.85);
   return [mesh, rind];
 }
 
@@ -851,16 +875,19 @@ function createSauceModel(id, color) {
   }
 
   const radius = id === 'jar-tomato-sauce' ? 0.16 : 0.17;
-  group.add(createMesh(new THREE.CylinderGeometry(radius, radius, 0.5, 28), color, [0, 1.26, 0]));
-  group.add(createMesh(new THREE.CylinderGeometry(radius * 0.95, radius * 0.95, 0.08, 28), 0x3f4548, [0, 1.55, 0]));
+  // Glass sauce jar
+  group.add(createMesh(new THREE.CylinderGeometry(radius, radius, 0.5, 28), color, [0, 1.26, 0], [1, 1, 1], [0, 0, 0], 0.24));
+  // Brushed lid
+  group.add(createMesh(new THREE.CylinderGeometry(radius * 0.95, radius * 0.95, 0.08, 28), 0x3f4548, [0, 1.55, 0], [1, 1, 1], [0, 0, 0], 0.3));
+  // Jar Label
   group.add(createMesh(new THREE.BoxGeometry(radius * 1.45, 0.14, 0.018), 0xffffff, [0, 1.27, -radius - 0.012]));
   return [group];
 }
 
 function createBottleModel(color, glassColor = 0x365d9b) {
   const group = new THREE.Group();
-  group.add(createMesh(new THREE.CylinderGeometry(0.15, 0.17, 0.56, 28), color, [0, 1.25, 0]));
-  group.add(createMesh(new THREE.CylinderGeometry(0.075, 0.095, 0.32, 24), glassColor, [0, 1.68, 0]));
+  group.add(createMesh(new THREE.CylinderGeometry(0.15, 0.17, 0.56, 28), color, [0, 1.25, 0], [1, 1, 1], [0, 0, 0], 0.28));
+  group.add(createMesh(new THREE.CylinderGeometry(0.075, 0.095, 0.32, 24), glassColor, [0, 1.68, 0], [1, 1, 1], [0, 0, 0], 0.18));
   group.add(createMesh(new THREE.CylinderGeometry(0.08, 0.08, 0.07, 24), 0x1f2933, [0, 1.88, 0]));
   group.add(createMesh(new THREE.BoxGeometry(0.22, 0.15, 0.018), 0xffffff, [0, 1.28, -0.17]));
   return group;
@@ -868,9 +895,25 @@ function createBottleModel(color, glassColor = 0x365d9b) {
 
 function createMeatTrayModel(color) {
   const group = new THREE.Group();
-  group.add(createMesh(new THREE.BoxGeometry(0.52, 0.08, 0.38), 0x111827, [0, 1.06, 0], [1, 1, 1], [0, 0.08, 0]));
-  group.add(createMesh(new THREE.SphereGeometry(0.18, 24, 14), color, [-0.08, 1.14, 0], [1.35, 0.32, 0.75], [0, 0, 0], 0.72));
-  group.add(createMesh(new THREE.BoxGeometry(0.5, 0.035, 0.36), 0xffffff, [0, 1.2, 0], [1, 1, 1], [0, 0.08, 0], 0.2, 0.45));
+  // Shiny black styrofoam tray
+  group.add(createMesh(new THREE.BoxGeometry(0.52, 0.08, 0.38), 0x111827, [0, 1.06, 0], [1, 1, 1], [0, 0.08, 0], 0.22));
+  
+  // High fidelity marbled meat chunk using createMeatTexture()
+  const meatMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(0.18, 24, 14),
+    new THREE.MeshStandardMaterial({
+      map: createMeatTexture(),
+      roughness: 0.65
+    })
+  );
+  meatMesh.position.set(-0.08, 1.14, 0);
+  meatMesh.scale.set(1.35, 0.32, 0.75);
+  meatMesh.castShadow = true;
+  meatMesh.receiveShadow = true;
+  group.add(meatMesh);
+  
+  // Semi-transparent cling film wrap overlay
+  group.add(createMesh(new THREE.BoxGeometry(0.5, 0.035, 0.36), 0xffffff, [0, 1.2, 0], [1, 1, 1], [0, 0.08, 0], 0.1, 0.42));
   return [group];
 }
 
@@ -905,9 +948,15 @@ function createPastaModel(id, color) {
 
 function createCakeModel(color) {
   const group = new THREE.Group();
-  group.add(createMesh(new THREE.CylinderGeometry(0.23, 0.25, 0.22, 32), color, [0, 1.12, 0]));
-  group.add(createMesh(new THREE.CylinderGeometry(0.22, 0.22, 0.045, 32), 0xf2e8df, [0, 1.26, 0]));
-  group.add(createMesh(new THREE.SphereGeometry(0.035, 12, 8), 0xd33f49, [0.08, 1.3, -0.05]));
+  // Multi-layered chocolate fudge cake
+  group.add(createMesh(new THREE.CylinderGeometry(0.23, 0.25, 0.22, 32), 0x3d271d, [0, 1.12, 0], [1, 1, 1], [0, 0, 0], 0.68)); // cake sponge
+  group.add(createMesh(new THREE.CylinderGeometry(0.232, 0.232, 0.032, 32), 0xf5f5f5, [0, 1.22, 0])); // middle cream layer
+  group.add(createMesh(new THREE.CylinderGeometry(0.22, 0.22, 0.045, 32), color, [0, 1.28, 0], [1, 1, 1], [0, 0, 0], 0.42)); // chocolate frosting
+  
+  // Cherries on top
+  [-0.1, 0.06, -0.02].forEach((offset, idx) => {
+    group.add(createMesh(new THREE.SphereGeometry(0.035, 12, 8), 0xd32f2f, [offset, 1.34, idx === 1 ? 0.08 : -0.06], [1, 1, 1], [0, 0, 0], 0.25));
+  });
   return [group];
 }
 
@@ -992,6 +1041,133 @@ function addPlayerMarker() {
   scene.add(playerMarker);
 }
 
+function createTileTexture() {
+  const size = 256;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  
+  // Terrazzo background tile color (sleek off-white aggregate)
+  ctx.fillStyle = '#eef1f2';
+  ctx.fillRect(0, 0, size, size);
+  
+  // Aggregate speckles
+  for (let i = 0; i < 600; i++) {
+    const x = Math.random() * size;
+    const y = Math.random() * size;
+    const r = Math.random() * 1.5 + 0.5;
+    const val = Math.random();
+    if (val < 0.3) ctx.fillStyle = '#b0bec5';
+    else if (val < 0.6) ctx.fillStyle = '#cfd8dc';
+    else ctx.fillStyle = '#ffffff';
+    
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  
+  // Tile grout borders
+  ctx.strokeStyle = '#d0d8db';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(0, 0, size, size);
+  
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(9, 8); // Matches 18x16 dimensions
+  return texture;
+}
+
+function createWoodTexture() {
+  const size = 128;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  
+  // Base wood color
+  ctx.fillStyle = '#a06a42';
+  ctx.fillRect(0, 0, size, size);
+  
+  // Wood grain rings
+  ctx.fillStyle = '#83512b';
+  for (let i = 0; i < 40; i++) {
+    const y = Math.random() * size;
+    const h = Math.random() * 2 + 1;
+    ctx.fillRect(0, y, size, h);
+  }
+  
+  // Subtle waves
+  for (let i = 0; i < 15; i++) {
+    ctx.beginPath();
+    const startY = Math.random() * size;
+    ctx.moveTo(0, startY);
+    ctx.bezierCurveTo(size * 0.25, startY + 12, size * 0.75, startY - 12, size, startY);
+    ctx.strokeStyle = 'rgba(90, 52, 22, 0.42)';
+    ctx.lineWidth = Math.random() * 3 + 1.5;
+    ctx.stroke();
+  }
+  
+  const texture = new THREE.CanvasTexture(canvas);
+  return texture;
+}
+
+function createMetalTexture() {
+  const size = 128;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  
+  // Metallic gray base
+  ctx.fillStyle = '#b0bec5';
+  ctx.fillRect(0, 0, size, size);
+  
+  // Brushed streaks
+  ctx.fillStyle = '#eceff1';
+  for (let i = 0; i < 120; i++) {
+    const x = Math.random() * size;
+    const w = Math.random() * 1.5 + 0.5;
+    ctx.fillRect(x, 0, w, size);
+  }
+  ctx.fillStyle = '#78909c';
+  for (let i = 0; i < 60; i++) {
+    const x = Math.random() * size;
+    const w = Math.random() * 1.2 + 0.5;
+    ctx.fillRect(x, 0, w, size);
+  }
+  
+  const texture = new THREE.CanvasTexture(canvas);
+  return texture;
+}
+
+function createMeatTexture() {
+  const size = 128;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  
+  // Red beef base
+  ctx.fillStyle = '#a83232';
+  ctx.fillRect(0, 0, size, size);
+  
+  // Fat marbling stripes
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.72)';
+  for (let i = 0; i < 20; i++) {
+    ctx.beginPath();
+    const startY = Math.random() * size;
+    ctx.moveTo(0, startY);
+    ctx.bezierCurveTo(size * 0.25, startY + 8, size * 0.75, startY - 8, size, startY);
+    ctx.lineWidth = Math.random() * 2 + 1;
+    ctx.stroke();
+  }
+  
+  const texture = new THREE.CanvasTexture(canvas);
+  return texture;
+}
+
 function createLabel(text, foreground, background) {
   const canvasEl = document.createElement('canvas');
   canvasEl.width = 512;
@@ -1044,6 +1220,11 @@ function bindSceneEvents() {
     button.addEventListener('pointerup', () => appState.keys.delete(action));
     button.addEventListener('pointerleave', () => appState.keys.delete(action));
     button.addEventListener('pointercancel', () => appState.keys.delete(action));
+    button.addEventListener('mouseleave', () => appState.keys.delete(action));
+    button.addEventListener('touchcancel', () => appState.keys.delete(action));
+    button.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+    });
   });
 }
 
@@ -1219,11 +1400,50 @@ function distance(x1, z1, x2, z2) {
   return Math.hypot(x1 - x2, z1 - z2);
 }
 
+function initMobileNavigation() {
+  const tabs = document.querySelectorAll('.mobile-tab-btn');
+  const taskPanel = document.querySelector('.task-panel');
+  const sceneShell = document.querySelector('.scene-shell');
+  const trolleyPanel = document.querySelector('.trolley-panel');
+  
+  if (tabs.length === 0) return;
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Deactivate all tab buttons
+      tabs.forEach(t => t.classList.remove('active'));
+      // Activate selected tab
+      tab.classList.add('active');
+      
+      const targetTab = tab.dataset.tab;
+      
+      // Hide all panels by default on mobile
+      if (taskPanel) taskPanel.classList.remove('tab-visible');
+      if (sceneShell) sceneShell.classList.remove('tab-visible');
+      if (trolleyPanel) trolleyPanel.classList.remove('tab-visible');
+      
+      // Show selected panel
+      if (targetTab === 'explore' && sceneShell) {
+        sceneShell.classList.add('tab-visible');
+        // Trigger Three.js resize to update rendering aspect ratio
+        if (window.dispatchEvent) {
+          window.dispatchEvent(new Event('resize'));
+        }
+      } else if (targetTab === 'checklist' && taskPanel) {
+        taskPanel.classList.add('tab-visible');
+      } else if (targetTab === 'metrics' && trolleyPanel) {
+        trolleyPanel.classList.add('tab-visible');
+      }
+    });
+  });
+}
+
 function init() {
   els.budgetLimit.textContent = money(scenario.budget);
   bindUIEvents();
   renderShoppingList();
   updateCartUI();
+  initMobileNavigation();
 }
 
 window.startGame = startGame;
