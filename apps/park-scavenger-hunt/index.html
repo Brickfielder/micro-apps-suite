@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Park Scavenger Hunt | Micro Apps Suite</title>
+  <link rel="stylesheet" href="../../shared/theme.css">
+  <link rel="stylesheet" href="./app.css">
+</head>
+<body>
+  <div class="park-app" aria-live="polite">
+    <header class="park-header">
+      <div class="header-brand">
+        <div class="brand">Park Scavenger Hunt</div>
+        <div class="scenario-copy">Visual Scanning Rehabilitation Task</div>
+      </div>
+      
+      <!-- Quick Control Tools -->
+      <div class="rehab-tools">
+        <button id="toggle-anchor-btn" class="btn-tool" type="button" aria-label="Toggle Visual Sky Guide">
+          ⚓ Left Sky Arrow
+        </button>
+      </div>
+
+      <div class="status-strip" aria-label="Task Status">
+        <div>
+          <span>Scavenger Items</span>
+          <strong id="progress-count">0 of 10</strong>
+        </div>
+        <div>
+          <span>Camera Turns (L / R)</span>
+          <strong id="turns-ratio">0 / 0</strong>
+        </div>
+        <div id="status-box">
+          <span>Attention Level</span>
+          <strong id="attention-rating">Scanning...</strong>
+        </div>
+      </div>
+    </header>
+
+    <main class="park-layout">
+      <!-- Scavenger List Panel -->
+      <aside class="task-panel" aria-label="Scavenger hunt list">
+        <div class="panel-heading">
+          <h2>Items to Find</h2>
+        </div>
+        <p class="task-note">Walk through the park using keyboard or touch arrows. Check bushes, benches, and paths. Turn to the <strong>left</strong> regularly to search your environment.</p>
+        <div id="scavenger-list" class="scavenger-list"></div>
+      </aside>
+
+      <!-- 3D Park Scene -->
+      <section class="scene-shell" aria-label="3D Park Environment">
+        <canvas id="park-canvas"></canvas>
+        <div id="toast" class="toast hidden"></div>
+
+        <!-- Selected / Inspected Product Panel -->
+        <div id="item-panel" class="item-panel hidden" aria-label="Selected item">
+          <button id="close-item-btn" class="item-panel__close" type="button" aria-label="Close item details">×</button>
+          <div class="item-panel__meta" id="item-zone">Park Area</div>
+          <h2 id="item-name">Item Name</h2>
+          <p id="item-detail">Description</p>
+          <button id="add-item-btn" class="btn-collect" type="button">Collect Item</button>
+        </div>
+
+        <div class="scene-footer">
+          <div id="interaction-hint">Press Start Exploration to enter the park.</div>
+          <!-- Rehabilitation friendly touch movement panel -->
+          <div class="touch-controls" aria-label="Movement controls">
+            <button type="button" data-control="turn-left" aria-label="Turn left">‹</button>
+            <button type="button" data-control="forward" aria-label="Move forward">↑</button>
+            <button type="button" data-control="turn-right" aria-label="Turn right">›</button>
+            <button type="button" data-control="backward" aria-label="Move backward">↓</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dashboard / Quick Stats Panel -->
+      <aside class="stats-panel" aria-label="Real-time scanning metrics">
+        <div class="panel-heading">
+          <h2>Scanning Metrics</h2>
+        </div>
+        <p class="task-note">Real-time indicators showing camera rotation and time spent looking to the left hemifield.</p>
+        
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <span>Left Time %</span>
+            <strong id="left-time-percent">50%</strong>
+          </div>
+          <div class="metric-card">
+            <span>Left Turns</span>
+            <strong id="left-turn-count">0</strong>
+          </div>
+          <div class="metric-card">
+            <span>Right Turns</span>
+            <strong id="right-turn-count">0</strong>
+          </div>
+        </div>
+
+        <div class="stats-footer">
+          <button id="finish-btn" class="btn-finish" type="button" disabled>Complete Session</button>
+          <p id="finish-help">Find all scavenger items, or use practice complete to analyze scanning results early.</p>
+          <button id="practice-finish-btn" class="btn-secondary" type="button">Practice Complete</button>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- Instruction Splash Overlay -->
+  <div id="intro-screen" class="overlay">
+    <div class="card-modal intro-card">
+      <h1>Park Scavenger Hunt</h1>
+      <p><strong>Goal:</strong> Find 10 scattered items in a virtual park environment.</p>
+      <p>This task is designed to train and assess **visual scanning** for patients with left visuo-spatial neglect.</p>
+      <ul>
+        <li>Use <strong>W/S/A/D</strong> or <strong>arrow keys</strong> (or touch buttons) to walk and look around.</li>
+        <li>Turn your head and camera to the <strong>LEFT</strong> to find hidden objects.</li>
+        <li>Use the **⚓ Left Sky Arrow** to show a guide pointing left in the sky.</li>
+      </ul>
+      <button id="start-btn" class="btn-collect" type="button">Start Exploration</button>
+    </div>
+  </div>
+
+  <!-- Clinician Report Overlay -->
+  <div id="report-screen" class="overlay hidden">
+    <div class="card-modal report-card">
+      <div class="report-header">
+        <div>
+          <h1>Clinician Session Report</h1>
+          <p id="feedback-summary">Visual scanning metrics will appear here.</p>
+        </div>
+        <div class="star-score" id="star-score" aria-label="Visual scanning rating">--</div>
+      </div>
+
+      <div class="report-grid">
+        <div class="result-tile">
+          <span>Neglect Index</span>
+          <strong id="res-neglect">Normal</strong>
+        </div>
+        <div class="result-tile">
+          <span>Items Found</span>
+          <strong id="res-items">0/10</strong>
+        </div>
+        <div class="result-tile">
+          <span>Left vs Right Turns</span>
+          <strong id="res-turns">0 / 0</strong>
+        </div>
+        <div class="result-tile">
+          <span>Left-Side Time %</span>
+          <strong id="res-left-time">50%</strong>
+        </div>
+      </div>
+
+      <table id="res-table">
+        <thead>
+          <tr>
+            <th>Clinical Metric</th>
+            <th>Value</th>
+            <th>Interpretation</th>
+          </tr>
+        </thead>
+        <tbody id="res-body"></tbody>
+      </table>
+
+      <!-- Clinician Notes Entry Form -->
+      <div class="clinician-notes-form">
+        <label for="clinician-comment"><strong>Clinical observations & therapy goals:</strong></label>
+        <textarea id="clinician-comment" placeholder="Note down spatial search behaviors, attention cues required, motor planning difficulty, or head-turn effort..."></textarea>
+      </div>
+
+      <div class="report-actions">
+        <button class="btn-secondary" type="button" onclick="location.reload()">Try Again</button>
+        <button id="download-csv-btn" class="btn-collect" type="button">Download Session CSV</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

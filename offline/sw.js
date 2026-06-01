@@ -28,8 +28,11 @@ self.addEventListener('install', (event) => {
             coreAssets.push(app.entryPath);
             const base = app.entryPath.replace(/[^/]+$/, '');
             coreAssets.push(`${base}app.js`, `${base}app.css`);
-            if (app.slug === 'fresh-market') {
-              coreAssets.push(`${base}app-3d.js`, `${base}vendor/three.module.js`);
+            if (app.slug === 'fresh-market' || app.slug === 'park-scavenger-hunt') {
+              coreAssets.push(`${base}app-3d.js`);
+              if (app.slug === 'fresh-market') {
+                coreAssets.push(`${base}vendor/three.module.js`);
+              }
             }
           }
         }

@@ -82,5 +82,17 @@
     "lastUpdated": "2026-05-28",
     "status": "Stable",
     "thumbnail": "./assets/images/thumbnails/app-placeholder.svg"
+  },
+  {
+    "slug": "park-scavenger-hunt",
+    "title": "Park Scavenger Hunt",
+    "description": "Explore a peaceful 3D park and find hidden items, designed to train visual scanning for left-sided neglect.",
+    "tags": ["attention", "visuospatial"],
+    "entryPath": "./apps/park-scavenger-hunt/index.html",
+    "version": "1.0.0",
+    "offlineCapable": true,
+    "lastUpdated": "2026-06-01",
+    "status": "Stable",
+    "thumbnail": "./assets/images/thumbnails/app-placeholder.svg"
   }
 ]
