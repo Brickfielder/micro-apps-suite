@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v3-suite';
+const CACHE_VERSION = 'v4-suite';
 const CACHE_NAME = `micro-apps-${CACHE_VERSION}`;
 const OFFLINE_URL = './offline/offline.html';
 
@@ -28,6 +28,9 @@ self.addEventListener('install', (event) => {
             coreAssets.push(app.entryPath);
             const base = app.entryPath.replace(/[^/]+$/, '');
             coreAssets.push(`${base}app.js`, `${base}app.css`);
+            if (app.slug === 'fresh-market') {
+              coreAssets.push(`${base}app-3d.js`, `${base}vendor/three.module.js`);
+            }
           }
         }
       } catch (error) {
