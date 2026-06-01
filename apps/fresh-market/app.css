@@ -755,7 +755,7 @@ th {
   .item-panel {
     left: 12px;
     right: 12px;
-    bottom: 84px; /* Perfectly elevated above scene footer and tab bar */
+    bottom: 140px; /* Elevated completely above touch controls and hints to prevent overlapping */
     width: auto;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     box-sizing: border-box;
