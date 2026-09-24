@@ -34,6 +34,7 @@ const els = {
   progressCount: document.getElementById('progress-count'),
   turnsRatio: document.getElementById('turns-ratio'),
   attentionRating: document.getElementById('attention-rating'),
+  statusBox: document.getElementById('status-box'),
   scavengerList: document.getElementById('scavenger-list'),
   toggleAnchorBtn: document.getElementById('toggle-anchor-btn'),
   introScreen: document.getElementById('intro-screen'),
@@ -177,7 +178,7 @@ function collectSelectedItem() {
 }
 
 // Track camera turns and orientations
-export function logCameraDirection(angle) {
+export function logCameraDirection(angle, elapsed = 0) {
   if (!state.gameStarted) return;
   
   const threshold = 0.005; // filter noise
@@ -187,9 +188,9 @@ export function logCameraDirection(angle) {
   // Facing North: turning left (West) increases angle, so dirX = -sin(angle) is negative (< 0)
   const dirX = -Math.sin(angle);
   if (dirX < 0) {
-    state.leftTime += 1/60; // based on 60fps tick
+    state.leftTime += elapsed;
   } else {
-    state.rightTime += 1/60;
+    state.rightTime += elapsed;
   }
   
   if (Math.abs(delta) > threshold) {
@@ -231,13 +232,13 @@ function tickMetrics() {
   // Dynamically analyze attention level
   let attentionRating = "Scanning...";
   if (leftPercent < 20) {
-    attentionRating = "Severe Neglect ⚠️";
+    attentionRating = "Limited leftward viewing";
     els.statusBox.className = "budget-negative";
   } else if (leftPercent < 38) {
-    attentionRating = "Mild Neglect 🔍";
+    attentionRating = "Some leftward viewing";
     els.statusBox.removeAttribute("class");
   } else {
-    attentionRating = "Normal Sweep ✅";
+    attentionRating = "Balanced viewing";
     els.statusBox.removeAttribute("class");
   }
   els.attentionRating.textContent = attentionRating;
@@ -276,19 +277,19 @@ function scoreSession() {
   
   // Neglect Index calculation
   const lookRatio = state.leftTime / (state.leftTime + state.rightTime || 1);
-  let neglectRating = "Normal Exploration";
-  let interpretation = "Patient effectively scanned both hemifields.";
+  let neglectRating = "Balanced viewing";
+  let interpretation = "Viewing time was distributed across both sides of the starting direction.";
   let starRating = 3;
   let neglectClass = "pass";
   
   if (lookRatio < 0.22) {
-    neglectRating = "Severe Left Neglect";
-    interpretation = "Patient showed a strong rightward bias and rarely scanned the left hemifield.";
+    neglectRating = "Limited leftward viewing";
+    interpretation = "Less than 22% of recorded viewing time was left of the starting direction.";
     starRating = 1;
     neglectClass = "fail";
   } else if (lookRatio < 0.38) {
-    neglectRating = "Mild Left Neglect";
-    interpretation = "Patient scanned left side occasionally but required deliberate cues or effort.";
+    neglectRating = "Some leftward viewing";
+    interpretation = "Between 22% and 38% of recorded viewing time was left of the starting direction.";
     starRating = 2;
     neglectClass = "warn";
   }
