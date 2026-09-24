@@ -40,6 +40,7 @@ let graniteTexture;
 let waterTexture;
 let leafTexture;
 let strawTexture;
+const groundDetails = [];
 
 // Scavenger target objects positions (coordinated to left-side bias)
 const targetsData = [
@@ -189,6 +190,46 @@ function addScenery() {
   addFlowerbed(-3.5, -4.2, 2.0, 1.6);
   addFlowerbed(-8.5, -9.2, 2.0, 2.0); // SW flowerbed (Left)
   addFlowerbed(8.5, 9.2, 2.2, 1.8); // NE flowerbed
+
+  addGroundDetails();
+}
+
+// Small, batched details break up the flat lawn without hiding scavenger objects.
+function addGroundDetails() {
+  let seed = 73641;
+  const random = () => ((seed = (1664525 * seed + 1013904223) >>> 0) / 4294967296);
+  const bladeGeometry = new THREE.ConeGeometry(0.035, 0.23, 3);
+  const bladeMaterials = [0x769b40, 0x96ae52, 0x547b35].map(color =>
+    new THREE.MeshStandardMaterial({ color, roughness: 1, side: THREE.DoubleSide })
+  );
+  const batches = bladeMaterials.map(material => new THREE.InstancedMesh(bladeGeometry, material, 480));
+  const counts = [0, 0, 0];
+  const transform = new THREE.Object3D();
+  let attempts = 0;
+  while (counts.some(count => count < 480) && attempts++ < 10000) {
+    const x = (random() - 0.5) * 33;
+    const z = (random() - 0.5) * 33;
+    // Clear footpaths, fountain, flowerbeds and the immediate vicinity of targets.
+    if (Math.abs(x) < 1.2 || Math.abs(z) < 1.1 ||
+        (z > 5.2 && z < 6.8 && x > -10 && x < 0) ||
+        (z > -8.8 && z < -7.2 && x > 0 && x < 9) ||
+        targetsData.some(item => Math.hypot(x - item.x, z - item.z) < 0.85) ||
+        colliders.some(box => Math.abs(x - box.x) < box.width / 2 + 0.3 && Math.abs(z - box.z) < box.depth / 2 + 0.3)) continue;
+    const kind = Math.floor(random() * 3);
+    if (counts[kind] >= 480) continue;
+    transform.position.set(x, 0.10, z);
+    transform.rotation.set(0, random() * Math.PI * 2, (random() - 0.5) * 0.35);
+    transform.scale.setScalar(0.65 + random() * 0.9);
+    transform.updateMatrix();
+    batches[kind].setMatrixAt(counts[kind]++, transform.matrix);
+  }
+  batches.forEach((batch, index) => {
+    batch.count = counts[index];
+    batch.instanceMatrix.needsUpdate = true;
+    batch.frustumCulled = false;
+    scene.add(batch);
+    groundDetails.push(batch);
+  });
 }
 
 function addPath(x, z, w, h, direction) {
@@ -326,24 +367,21 @@ function addBench(x, z, rotation) {
     bench.add(shadow);
   }
   
-  // Base slab (warm mahogany oak)
-  const slab = new THREE.Mesh(
-    new THREE.BoxGeometry(1.8, 0.1, 0.6),
-    new THREE.MeshStandardMaterial({ map: woodTexture, roughness: 0.62 })
-  );
-  slab.position.set(0, 0.45, 0);
-  slab.castShadow = true;
-  slab.receiveShadow = true;
-  bench.add(slab);
-  
-  // Backrest
-  const back = new THREE.Mesh(
-    new THREE.BoxGeometry(1.8, 0.4, 0.08),
-    new THREE.MeshStandardMaterial({ map: woodTexture, roughness: 0.65 })
-  );
-  back.position.set(0, 0.85, 0.26);
-  back.castShadow = true;
-  bench.add(back);
+  // Separate timber slats leave the gaps visible from the walking path.
+  const timber = new THREE.MeshStandardMaterial({ map: woodTexture, roughness: 0.75 });
+  [-0.2, 0, 0.2].forEach(depth => {
+    const slat = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.075, 0.17), timber);
+    slat.position.set(0, 0.45, depth);
+    slat.castShadow = true;
+    slat.receiveShadow = true;
+    bench.add(slat);
+  });
+  [0.72, 0.89].forEach(height => {
+    const slat = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.13, 0.075), timber);
+    slat.position.set(0, height, 0.26);
+    slat.castShadow = true;
+    bench.add(slat);
+  });
   
   // Legs (heavy cast iron look)
   [-0.7, 0.7].forEach(legX => {
@@ -887,15 +925,6 @@ function addScavengerTargets() {
       group.add(part);
     });
     
-    // Add floating clinic visual focus indicator (bouncing ring) above target
-    const ringGeo = new THREE.RingGeometry(0.2, 0.25, 12);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0xffab00, side: THREE.DoubleSide });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.rotation.x = -Math.PI / 2;
-    ring.position.set(0, 0.85, 0);
-    ring.name = 'rehab-ring';
-    group.add(ring);
-    
     scene.add(group);
   });
 }
@@ -1347,16 +1376,6 @@ function createTargetModel(shape, color) {
   return models;
 }
 
-// Bouncing ring animations for target highlights
-function animateRehabRings(time) {
-  scene.traverse(node => {
-    if (node.name === 'rehab-ring') {
-      node.position.y = 0.82 + Math.sin(time * 0.005) * 0.05;
-      node.rotation.z += 0.015;
-    }
-  });
-}
-
 // Animate Fountain Particle Systems
 function updateFountainParticles(dt) {
   fountainParticles.forEach(p => {
@@ -1418,10 +1437,10 @@ function updateLocomotion(dt) {
   // Process rotations
   if (rotate !== 0) {
     player.rotation += rotate;
-    // Log scanning angles to parent app state manager
-    if (window.PARK_APP && typeof window.PARK_APP.logCameraDirection === 'function') {
-      window.PARK_APP.logCameraDirection(player.rotation);
-    }
+  }
+  // Sample viewing time on every frame, including while the player is still.
+  if (window.PARK_APP && typeof window.PARK_APP.logCameraDirection === 'function') {
+    window.PARK_APP.logCameraDirection(player.rotation, dt);
   }
   
   // Collision Detection with Sliding Response
@@ -1483,7 +1502,10 @@ function checkProximityTargets() {
     if (!scene.getObjectByName(`target-${item.id}`)) return;
     
     const dist = distance(player.x, player.z, item.x, item.z);
-    if (dist < minDist) {
+    // An item can be inspected only when it is actually in the player's view.
+    const heading = Math.atan2(-(item.x - player.x), -(item.z - player.z));
+    const bearing = Math.atan2(Math.sin(heading - player.rotation), Math.cos(heading - player.rotation));
+    if (dist < minDist && Math.abs(bearing) < 0.48) {
       minDist = dist;
       nearestItem = item;
     }
@@ -1491,7 +1513,7 @@ function checkProximityTargets() {
   
   if (nearestItem) {
     appState.nearItem = nearestItem;
-    els.interactionHint.textContent = `Near: ${nearestItem.name}. Press ENTER or click Collect to pick it up!`;
+    els.interactionHint.textContent = `In view: ${nearestItem.name}. Press ENTER or choose Collect Item.`;
     
     // Auto-alert state manager
     if (window.PARK_APP && typeof window.PARK_APP.triggerInspectItem === 'function') {
@@ -1592,7 +1614,6 @@ function tick(time) {
   
   updateLocomotion(dt);
   updateFountainParticles(dt);
-  animateRehabRings(time);
   checkProximityTargets();
   
   // Pulsing and floating 3D neon sky arrow
