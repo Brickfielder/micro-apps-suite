@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v4-suite';
+const CACHE_VERSION = 'v5-emergency';
 const CACHE_NAME = `micro-apps-${CACHE_VERSION}`;
 const OFFLINE_URL = './offline/offline.html';
 
@@ -28,9 +28,15 @@ self.addEventListener('install', (event) => {
             coreAssets.push(app.entryPath);
             const base = app.entryPath.replace(/[^/]+$/, '');
             coreAssets.push(`${base}app.js`, `${base}app.css`);
+            if (app.slug === 'emergency-call-simulator') {
+              coreAssets.push(...['core.mjs', 'voice.mjs', 'icons.mjs', 'config.json', 'scenarios/index.json', 'scenarios/fall.json', 'scenarios/chest-pain.json', 'scenarios/collapse.json', 'scenarios/burglary.json', 'scenarios/house-fire.json'].map(file => `${base}${file}`));
+            }
             if (app.slug === 'fresh-market' || app.slug === 'park-scavenger-hunt') {
               coreAssets.push(`${base}app-3d.js`);
-              if (app.slug === 'fresh-market') {
+              if (app.slug === 'emergency-call-simulator') {
+              coreAssets.push(...['core.mjs', 'voice.mjs', 'icons.mjs', 'config.json', 'scenarios/index.json', 'scenarios/fall.json', 'scenarios/chest-pain.json', 'scenarios/collapse.json', 'scenarios/burglary.json', 'scenarios/house-fire.json'].map(file => `${base}${file}`));
+            }
+            if (app.slug === 'fresh-market') {
                 coreAssets.push(`${base}vendor/three.module.js`);
               }
             }
@@ -65,7 +71,8 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const { request } = event;
-  if (request.method !== 'GET') return;
+  const url = new URL(request.url);
+  if (request.method !== 'GET' || url.origin !== self.location.origin || url.pathname.includes('/api/')) return;
 
   if (request.mode === 'navigate') {
     event.respondWith(pageHandler(request));

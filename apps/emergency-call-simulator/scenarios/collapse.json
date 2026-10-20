@@ -1,0 +1,95 @@
+{
+  "id": "collapse",
+  "name": "A collapse in the park",
+  "description": "A person collapses in a public place. Practise giving a precise location.",
+  "service": "ambulance",
+  "difficulty": "challenging",
+  "fictional": true,
+  "caller": {
+    "name": "Alex Morgan",
+    "telephone": "07700 900123"
+  },
+  "initiallyKnown": [
+    [
+      "Your role",
+      "You are Alex Morgan, a bystander."
+    ],
+    [
+      "Location",
+      "Training Gardens, London: beside the caf\u00e9 at the east gate on Practice Lane (invented place)."
+    ],
+    [
+      "Callback number",
+      "07700 900123 (fictional)."
+    ],
+    [
+      "What happened",
+      "An adult who looks about 50 has just collapsed beside the caf\u00e9. You are next to the person."
+    ],
+    [
+      "What you can see",
+      "The person is not responding. You can see occasional gasps but cannot tell whether breathing is normal. No visible serious bleeding."
+    ],
+    [
+      "Exercise boundary",
+      "This exercise ends after communicating information. CPR or physical first aid must be taught separately by a qualified clinician."
+    ]
+  ],
+  "criteria": [
+    {
+      "id": "location",
+      "label": "Exact location",
+      "rule": "Building number/name and street plus town, or an unambiguous named place with precise access point. A town alone is partial. Ask for a postcode if known, but do not force a guess.",
+      "easy": true
+    },
+    {
+      "id": "incident",
+      "label": "What has happened",
+      "rule": "A sufficiently clear description of the incident.",
+      "easy": true
+    },
+    {
+      "id": "conscious",
+      "label": "Whether the person is awake",
+      "rule": "Caller explicitly describes awake, unresponsive or unknown.",
+      "easy": true
+    },
+    {
+      "id": "breathing",
+      "label": "Whether the person is breathing",
+      "rule": "Caller explicitly describes breathing, not breathing, abnormal breathing, or uncertainty.",
+      "easy": true
+    },
+    {
+      "id": "age",
+      "label": "Approximate age",
+      "rule": "An approximate age, or an explicit statement that age is unknown.",
+      "easy": false
+    },
+    {
+      "id": "with_patient",
+      "label": "Whether caller is with the person",
+      "rule": "Caller explains their position relative to the person.",
+      "easy": false
+    },
+    {
+      "id": "callback",
+      "label": "Fictional callback number",
+      "rule": "A usable callback number supplied by the caller. Confirm unclear digits.",
+      "easy": true
+    }
+  ],
+  "changes": [],
+  "completion": {
+    "required": "Selected service matches scenario and required details communicated; closing statement heard."
+  },
+  "responderProtocol": {
+    "clinicalReviewStatus": "Awaiting clinician review",
+    "approvedFirstAid": [],
+    "behaviour": "Collect information only; no medical, rescue, crime-scene or firefighting instructions; never claim dispatch."
+  },
+  "assessment": {
+    "status": "Unvalidated descriptive practice observations",
+    "review": "AI observations require clinician review; do not infer impairment from pace, accent or transcription."
+  }
+}

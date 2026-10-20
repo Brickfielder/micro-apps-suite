@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>999 Practice | Micro Apps Suite</title>
+  <link rel="stylesheet" href="../../shared/theme.css">
+  <link rel="stylesheet" href="./app.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to practice</a>
+  <header class="suite-header">
+    <a href="../../index.html" class="suite-link">← Micro Apps Suite</a>
+    <span class="training"><span aria-hidden="true"></span> Training simulation — no real call</span>
+    <button id="header-stop" class="button stop" type="button" hidden>Stop exercise</button>
+  </header>
+  <main id="main" class="suite-app">
+    <div class="heading-row">
+      <div><p class="eyebrow">Everyday communication practice</p><h1>Emergency call simulator</h1><p class="intro">A familiar phone. A calm voice. Time to practise calling 999.</p></div>
+      <div class="session-label">999 <span>Practice</span></div>
+    </div>
+
+    <details id="clinician-panel" class="clinician-panel">
+      <summary>Clinician settings <span>Scenario, support &amp; voice connection</span></summary>
+      <form id="settings" novalidate>
+        <fieldset id="settings-fields">
+          <legend class="sr-only">Practice configuration</legend>
+          <div class="settings-grid">
+            <label>Scenario<select id="scenario" name="scenario"></select></label>
+            <label>Difficulty<select id="difficulty" name="difficulty"><option value="easy">Easy · generous support</option><option value="moderate">Moderate · focused questions</option><option value="challenging">Challenging · more detail</option></select></label>
+            <label>Assistance<select id="assistance" name="assistance"><option value="guided">Guided · offer prompts</option><option value="on-request">Prompts on request</option><option value="independent">Independent · no extra hints</option></select></label>
+            <label>Response time allowance<select id="allowance" name="allowance"><option value="30">30 seconds</option><option value="60" selected>60 seconds</option><option value="90">90 seconds</option></select></label>
+            <label>Maximum call duration<select id="duration" name="duration"><option value="300">5 minutes</option><option value="600" selected>10 minutes</option><option value="900">15 minutes</option></select></label>
+            <div class="checks"><label><input id="notes" type="checkbox" checked> Keep scenario card visible</label><label><input id="repetition" type="checkbox" checked> Allow extra repetition prompts</label><label><input id="captions" type="checkbox"> Show live captions</label><label><input id="sounds" type="checkbox" checked> Keypad sounds</label></div>
+          </div>
+          <details class="connection-settings"><summary>Voice connection</summary>
+            <p class="helper">For the clinician: connect your hosted voice service. Use the session access code, never an OpenAI API key.</p>
+            <label>Voice service endpoint<input id="endpoint" type="url" autocomplete="off" spellcheck="false" placeholder="https://your-service.vercel.app/api/emergency-session" aria-describedby="connection-hint"></label>
+            <label>Session access code<input id="access-code" type="password" autocomplete="off" spellcheck="false" aria-describedby="connection-hint"></label>
+            <p id="connection-hint" class="helper">Connection details stay in memory for this visit. On localhost, the local server supplies access automatically.</p>
+          </details>
+        </fieldset>
+      </form>
+      <p class="clinical-note">Development version · scenarios await clinician review. This is communication practice; no first-aid protocol is enabled.</p>
+    </details>
+
+    <div id="status" class="status" role="status" aria-live="polite">Loading scenarios…</div>
+    <div id="safety-alert" class="safety-alert" role="alert" hidden><h2>Stop the exercise</h2><p>If this is a real emergency, use a real phone to call 999 now. This app cannot contact emergency services or send help.</p><button id="safety-reset" class="button" type="button">Return to practice</button></div>
+
+    <div class="practice-layout">
+      <section class="preparation" aria-label="Scenario and practice controls">
+        <div id="scenario-card" class="scenario-card">
+          <div class="card-label">Your scenario <span>All details are fictional</span></div>
+          <h2 id="scenario-title">Preparing your scenario</h2><p id="scenario-description"></p>
+          <dl id="scenario-facts"></dl>
+          <div id="scenario-change" class="scenario-change" role="status" hidden></div>
+        </div>
+        <p id="notes-hidden" class="notes-hidden" hidden>Your clinician has hidden the scenario card for this exercise.</p>
+        <div id="orientation" class="orientation">
+          <h2>A safe place to practise</h2>
+          <p>No emergency services can be contacted and no help will be sent. Use only the fictional details above.</p>
+          <p>Your microphone audio goes to OpenAI for live AI conversation. This app does not record audio or save transcripts. Provider retention rules may still apply.</p>
+          <label class="consent"><input id="consent" type="checkbox"> I understand this is practice and agree to use the microphone.</label>
+          <button id="begin" class="button primary large" type="button" disabled>Begin practice <span aria-hidden="true">→</span></button>
+          <p class="helper">Internet and microphone required. You can stop at any time.</p>
+        </div>
+        <div id="practice-controls" class="practice-controls" hidden>
+          <p id="mic-status" class="mic-status" role="status">Microphone ready · not transmitting</p>
+          <p id="step-hint">Open the Phone app on the screen.</p>
+          <div class="control-row"><button id="pause" class="button" type="button" disabled>Pause</button><button id="stop" class="button stop" type="button">Stop exercise</button></div>
+          <button id="repeat" class="button" type="button" disabled>Ask to repeat</button>
+          <button id="hint" class="button" type="button" disabled>Give me a prompt</button>
+          <button id="reconnect" class="button primary" type="button" hidden>Reconnect voice</button>
+        </div>
+        <button id="real-emergency" class="real-emergency" type="button">This is a real emergency</button>
+      </section>
+
+      <section class="phone-stage" aria-label="Simulated smartphone">
+        <div id="device-switch" class="device-switch" role="group" aria-label="Phone style"><button class="selected" type="button" data-device="iphone" aria-pressed="true">iPhone</button><button type="button" data-device="android" aria-pressed="false">Android</button></div>
+        <div id="phone" class="phone iphone">
+          <div class="status-bar" aria-hidden="true"><time id="phone-clock">9:41</time><span class="camera-island"></span><span class="phone-indicators">▂▄▆ <svg viewBox="0 0 20 16"><path d="M1 5Q10-2 19 5M4 8Q10 3 16 8M7 11Q10 8 13 11"/><circle cx="10" cy="14" r="1"/></svg><svg viewBox="0 0 24 14"><rect x="1" y="1" width="19" height="12" rx="3"/><path d="M22 5v4"/><rect x="3" y="3" width="15" height="8" fill="currentColor"/></svg></span></div>
+          <div id="phone-home" class="phone-view home-view">
+            <div class="home-date" id="home-date">Tuesday, 20 October</div>
+            <div class="home-widget"><span>Make room for</span><strong>a little practice.</strong></div>
+            <div id="app-grid" class="app-grid"></div>
+            <div class="dock"><button id="phone-app" class="app-icon phone-icon" type="button" aria-label="Phone" disabled><span class="icon-art" data-icon="phone"></span><span class="sr-only">Phone</span></button><span class="dock-icon" data-icon="message" aria-hidden="true"></span><span class="dock-icon browser-icon" data-icon="compass" aria-hidden="true"></span><span class="dock-icon music-icon" data-icon="music" aria-hidden="true"></span></div>
+          </div>
+          <div id="phone-dialler" class="phone-view dialler-view" hidden>
+            <div class="dialler-top"><button id="back-home" type="button">‹ Home</button><span>Keypad</span></div>
+            <output id="dialled" class="dialled" aria-label="Number entered" aria-live="polite"></output>
+            <p id="dial-error" class="dial-error" role="status"></p>
+            <div id="keypad" class="keypad" role="group" aria-label="Phone keypad"></div>
+            <div class="dial-actions"><span></span><button id="call" class="call-button" type="button" aria-label="Start simulated call" data-icon="phone"></button><button id="delete" class="delete-button" type="button" aria-label="Delete last digit" data-icon="delete"></button></div>
+            <div class="dialler-nav" aria-hidden="true"><span>Recents</span><span>Contacts</span><strong>Keypad</strong></div>
+          </div>
+          <div id="phone-call" class="phone-view call-view" hidden>
+            <p id="call-stage" class="call-stage">Calling…</p><h2>999</h2><p id="call-name">Emergency services</p><p id="call-duration" class="call-duration">00:00</p>
+            <div class="call-avatar" aria-hidden="true" data-icon="headset"></div>
+            <div id="voice-bars" class="voice-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="call-tools"><button id="mute" type="button" aria-pressed="false"><span data-icon="mic"></span>mute</button><button id="speaker" type="button" aria-pressed="false"><span data-icon="speaker"></span>speaker</button></div>
+            <button id="end-call" class="call-button end-call" type="button" aria-label="End simulated call" data-icon="phone"></button><p class="call-training">Practice call only</p>
+          </div>
+          <div class="home-indicator" aria-hidden="true"></div>
+        </div>
+        <p id="phone-guidance" class="phone-guidance">Choose the phone you use. Begin when you are ready.</p>
+        <audio id="responder-audio" autoplay></audio>
+        <button id="enable-audio" class="button" type="button" hidden>Play responder audio</button>
+      </section>
+    </div>
+
+    <section id="caption-panel" class="caption-panel" aria-label="Live captions" hidden><h2>Live captions</h2><p class="helper">Transcription can be inaccurate. Speak in your own way.</p><div id="captions-output" role="log" aria-live="polite"></div></section>
+    <section id="review" class="review" tabindex="-1" hidden>
+      <p class="eyebrow">Time to reflect</p><h2>Your practice review</h2><p id="review-intro"></p>
+      <div id="review-metrics" class="review-metrics"></div>
+      <h3>Information communicated</h3><p class="helper">These AI observations are provisional. A clinician can review and change each one; an unobserved detail may reflect transcription or connection difficulties.</p><div id="review-details"></div>
+      <div class="settings-grid review-ratings"><label>Communication effectiveness · clinician review<select id="communication-rating"><option>Not assessed</option><option>Effective for this exercise</option><option>Some support was useful</option><option>Further review needed</option></select></label><label>Understanding of conversational requests · clinician review<select id="comprehension-rating"><option>Not assessed</option><option>Understanding demonstrated</option><option>Some support was useful</option><option>Further review needed</option></select></label></div>
+      <p id="review-next"></p><p class="clinical-note">Descriptive practice observations only; not a standardised neuropsychological outcome measure. No first-aid comprehension is assessed. Speech impairment, accent or slower responses must not be treated as evidence of reduced ability.</p>
+      <details><summary>Review transcript and assistance</summary><div id="transcript-review"></div><ul id="prompt-review"></ul></details>
+      <div class="export-controls"><label><input id="export-consent" type="checkbox"> I agree to save these results to a file on this device.</label><label><input id="export-transcript" type="checkbox"> Include transcript in the download</label><p class="helper">Downloads remain until you delete them. Follow your organisation’s storage and retention policy.</p><div class="control-row"><button id="export" class="button" type="button" disabled>Download results</button><button id="again" class="button primary" type="button">Practise again</button></div></div>
+    </section>
+    <footer>Micro Apps Suite · Communication practice <a href="./README.md">Setup and limitations</a></footer>
+  </main>
+</body>
+</html>

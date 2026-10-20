@@ -94,5 +94,17 @@
     "lastUpdated": "2026-06-01",
     "status": "Stable",
     "thumbnail": "./assets/images/thumbnails/app-placeholder.svg"
+  },
+  {
+    "slug": "emergency-call-simulator",
+    "title": "Emergency Call Simulator \u2014 999 Practice",
+    "description": "Practise a UK emergency call with a familiar phone and live AI voice. Internet, microphone and a configured voice service required.",
+    "tags": ["communication", "functional"],
+    "entryPath": "./apps/emergency-call-simulator/index.html",
+    "version": "0.1.0",
+    "offlineCapable": false,
+    "lastUpdated": "2026-10-20",
+    "status": "Development",
+    "thumbnail": "./assets/images/thumbnails/emergency-call-simulator.svg"
   }
 ]
