@@ -1,0 +1,85 @@
+{
+  "id": "burglary",
+  "name": "A burglary in progress",
+  "description": "You see somebody breaking into a neighbouring home.",
+  "service": "police",
+  "difficulty": "moderate",
+  "fictional": true,
+  "caller": {
+    "name": "Alex Morgan",
+    "telephone": "07700 900123"
+  },
+  "initiallyKnown": [
+    [
+      "Your role",
+      "You are Alex Morgan. You are safely inside your own locked home."
+    ],
+    [
+      "Incident location",
+      "32 Rehearsal Road, London, SE1 0ZZ (invented training address)."
+    ],
+    [
+      "Callback number",
+      "07700 900123 (fictional)."
+    ],
+    [
+      "What happened",
+      "From your window you can see one person forcing a rear window of the neighbouring house. It is happening now."
+    ],
+    [
+      "What you can see",
+      "The person has a dark jacket and a red backpack. You have not seen a weapon. You do not know whether anybody is inside."
+    ]
+  ],
+  "criteria": [
+    {
+      "id": "location",
+      "label": "Exact location",
+      "rule": "Building number/name and street plus town, or an unambiguous named place with precise access point. A town alone is partial. Ask for a postcode if known, but do not force a guess.",
+      "easy": true
+    },
+    {
+      "id": "incident",
+      "label": "What has happened",
+      "rule": "A sufficiently clear description of the incident.",
+      "easy": true
+    },
+    {
+      "id": "callback",
+      "label": "Fictional callback number",
+      "rule": "A usable callback number supplied by the caller. Confirm unclear digits.",
+      "easy": true
+    },
+    {
+      "id": "caller_safety",
+      "label": "Caller location and safety",
+      "rule": "Caller describes where they are and whether in immediate danger.",
+      "easy": true
+    },
+    {
+      "id": "suspects",
+      "label": "What can be seen",
+      "rule": "Caller describes what they observed, including number/description if known; accepts explicit uncertainty.",
+      "easy": false
+    },
+    {
+      "id": "weapons",
+      "label": "Known immediate risks",
+      "rule": "Caller reports whether any weapon or immediate threat was observed; unknown is acceptable.",
+      "easy": false
+    }
+  ],
+  "changes": [],
+  "completion": {
+    "required": "Selected service matches scenario and required details communicated; closing statement heard."
+  },
+  "responderProtocol": {
+    "clinicalReviewStatus": "Awaiting clinician review",
+    "approvedFirstAid": [],
+    "behaviour": "Collect information only; no medical, rescue, crime-scene or firefighting instructions; never claim dispatch."
+  },
+  "assessment": {
+    "status": "Unvalidated descriptive practice observations",
+    "review": "AI observations require clinician review; do not infer impairment from pace, accent or transcription."
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/emergency-session.mjs": {
+      "maxDuration": 30,
+      "includeFiles": "apps/emergency-call-simulator/scenarios/*.json"
+    }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [{"key": "Cache-Control", "value": "no-store, private"}]
+    }
+  ]
+}

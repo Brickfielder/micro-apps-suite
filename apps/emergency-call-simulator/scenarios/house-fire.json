@@ -1,0 +1,85 @@
+{
+  "id": "house-fire",
+  "name": "A fire next door",
+  "description": "Smoke and flames are coming from a neighbouring house.",
+  "service": "fire",
+  "difficulty": "moderate",
+  "fictional": true,
+  "caller": {
+    "name": "Alex Morgan",
+    "telephone": "07700 900123"
+  },
+  "initiallyKnown": [
+    [
+      "Your role",
+      "You are Alex Morgan, standing safely across the road."
+    ],
+    [
+      "Incident location",
+      "12 Practice Lane, London, SE1 0ZZ (invented training address)."
+    ],
+    [
+      "Callback number",
+      "07700 900123 (fictional)."
+    ],
+    [
+      "What happened",
+      "Smoke and flames are coming from the downstairs front window of a two-storey house."
+    ],
+    [
+      "What you can see",
+      "You do not know whether anybody is inside. You are outside and away from the house."
+    ]
+  ],
+  "criteria": [
+    {
+      "id": "location",
+      "label": "Exact location",
+      "rule": "Building number/name and street plus town, or an unambiguous named place with precise access point. A town alone is partial. Ask for a postcode if known, but do not force a guess.",
+      "easy": true
+    },
+    {
+      "id": "incident",
+      "label": "What has happened",
+      "rule": "A sufficiently clear description of the incident.",
+      "easy": true
+    },
+    {
+      "id": "callback",
+      "label": "Fictional callback number",
+      "rule": "A usable callback number supplied by the caller. Confirm unclear digits.",
+      "easy": true
+    },
+    {
+      "id": "property",
+      "label": "What is on fire",
+      "rule": "Caller describes the building/type and where smoke/flames are visible.",
+      "easy": false
+    },
+    {
+      "id": "occupants",
+      "label": "Whether anyone may be inside",
+      "rule": "Caller states what is known or explicitly says they do not know.",
+      "easy": true
+    },
+    {
+      "id": "caller_safety",
+      "label": "Caller location and safety",
+      "rule": "Caller describes their position and whether they are safe.",
+      "easy": true
+    }
+  ],
+  "changes": [],
+  "completion": {
+    "required": "Selected service matches scenario and required details communicated; closing statement heard."
+  },
+  "responderProtocol": {
+    "clinicalReviewStatus": "Awaiting clinician review",
+    "approvedFirstAid": [],
+    "behaviour": "Collect information only; no medical, rescue, crime-scene or firefighting instructions; never claim dispatch."
+  },
+  "assessment": {
+    "status": "Unvalidated descriptive practice observations",
+    "review": "AI observations require clinician review; do not infer impairment from pace, accent or transcription."
+  }
+}

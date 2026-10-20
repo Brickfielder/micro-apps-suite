@@ -1,6 +1,6 @@
 # Micro Apps Suite Architecture
 
-This repository hosts eight small static apps under one shared interface baseline. Everything is built with vanilla HTML, CSS, and JavaScript so each app can run from static hosting or a simple static server.
+This repository hosts nine small apps under one shared interface baseline. Interfaces use vanilla HTML, CSS and JavaScript. Emergency Call Simulator additionally requires an online, authenticated voice backend; its frontend remains compatible with GitHub Pages.
 
 ## Repository layout
 
@@ -13,6 +13,8 @@ This repository hosts eight small static apps under one shared interface baselin
 - `sw.js` — root-loaded service worker that imports `offline/sw.js` to cover the full site scope.
 - `docs/` — repository documentation.
 - `scripts/` — optional Node scripts for scaffolding/validation.
+- `api/emergency-session.mjs` — optional Vercel voice-session endpoint; secrets stay in server environment variables.
+- `tests/` — focused emergency-simulator checks, including an opt-in synthetic voice test.
 
 ## Adding a new app
 
@@ -33,10 +35,10 @@ This repository hosts eight small static apps under one shared interface baselin
 From the repository root:
 
 ```bash
-python3 -m http.server
+node scripts/emergency-dev-server.mjs
 ```
 
-Then open `http://localhost:8000/` (or `http://localhost:8000/apps/<slug>/` for a specific app). All paths are relative, so the site also works when served under a GitHub Pages subpath (e.g., `/repo-name/`).
+Then open `http://localhost:8080/` (or `http://localhost:8080/apps/<slug>/` for a specific app). The local server blocks secret files and provides the optional voice endpoint. All frontend paths are relative, so the site also works under a GitHub Pages subpath (e.g., `/repo-name/`). See the emergency simulator README for server environment and hosting configuration.
 
 ## Offline behavior
 
@@ -48,6 +50,7 @@ Then open `http://localhost:8000/` (or `http://localhost:8000/apps/<slug>/` for 
 - On first online visit, assets are cached. Subsequent visits work offline as long as the files were precached.
 - Cache versioning is controlled by `CACHE_VERSION` in `offline/sw.js`. Increment it when assets change to force a refresh.
 - If a route is requested offline and not cached, the user sees `offline/offline.html`.
+- The emergency simulator caches orientation assets only and is marked `offlineCapable: false`; voice needs the internet. API and cross-origin requests bypass the worker.
 - An update message can be sent to the service worker via `postMessage({ type: 'SKIP_WAITING' })` if you add a manual “refresh cache” button.
 
 ## GitHub Pages considerations

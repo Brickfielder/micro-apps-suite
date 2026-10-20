@@ -1,6 +1,6 @@
 # Micro Apps Suite
 
-Micro Apps Suite is a consolidated static collection of seven English-language practice apps. It merges selected work from `Brickfielder/micro-apps` and `Brickfielder/micro-apps-repository` into one build-free repository with a shared calm clinical interface baseline.
+Micro Apps Suite is a consolidated collection of English-language practice apps. It merges selected work from `Brickfielder/micro-apps` and `Brickfielder/micro-apps-repository` into one build-free repository with a shared calm clinical interface baseline. The optional emergency-call voice service runs separately from static hosting.
 
 ## Retained apps
 
@@ -11,14 +11,16 @@ Micro Apps Suite is a consolidated static collection of seven English-language p
 - Left-Anchor Reader
 - Emotion Chats
 - Brightwave Mobile Banking Simulator
+- Park Scavenger Hunt
+- [Emergency Call Simulator — 999 Practice](apps/emergency-call-simulator/README.md) (development; online voice service and clinician review required)
 
 ## Run locally
 
 ```bash
-python3 -m http.server
+node scripts/emergency-dev-server.mjs
 ```
 
-Open `http://localhost:8000/`.
+Open `http://localhost:8080/`. The local server blocks secret files and also provides the optional voice endpoint. See the emergency simulator README for API key and hosted backend setup.
 
 ## Structure
 

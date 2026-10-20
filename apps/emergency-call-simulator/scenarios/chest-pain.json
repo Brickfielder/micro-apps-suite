@@ -1,0 +1,103 @@
+{
+  "id": "chest-pain",
+  "name": "Sudden chest pain",
+  "description": "A family member develops sudden chest pain at home.",
+  "service": "ambulance",
+  "difficulty": "moderate",
+  "fictional": true,
+  "caller": {
+    "name": "Alex Morgan",
+    "telephone": "07700 900123"
+  },
+  "initiallyKnown": [
+    [
+      "Your role",
+      "You are Alex Morgan. Your family member Sam is 58."
+    ],
+    [
+      "Location",
+      "24 Rehearsal Road, London, SE1 0ZZ (invented training address)."
+    ],
+    [
+      "Callback number",
+      "07700 900123 (fictional)."
+    ],
+    [
+      "What happened",
+      "Sam has had heavy central chest pain for five minutes and looks pale and sweaty."
+    ],
+    [
+      "What you can see",
+      "Sam is awake and breathing, but says it feels difficult. You are with Sam in the kitchen. No visible bleeding."
+    ]
+  ],
+  "criteria": [
+    {
+      "id": "location",
+      "label": "Exact location",
+      "rule": "Building number/name and street plus town, or an unambiguous named place with precise access point. A town alone is partial. Ask for a postcode if known, but do not force a guess.",
+      "easy": true
+    },
+    {
+      "id": "incident",
+      "label": "What has happened",
+      "rule": "A sufficiently clear description of the incident.",
+      "easy": true
+    },
+    {
+      "id": "conscious",
+      "label": "Whether the person is awake",
+      "rule": "Caller explicitly describes awake, unresponsive or unknown.",
+      "easy": true
+    },
+    {
+      "id": "breathing",
+      "label": "Whether the person is breathing",
+      "rule": "Caller explicitly describes breathing, not breathing, abnormal breathing, or uncertainty.",
+      "easy": true
+    },
+    {
+      "id": "age",
+      "label": "Approximate age",
+      "rule": "An approximate age, or an explicit statement that age is unknown.",
+      "easy": false
+    },
+    {
+      "id": "with_patient",
+      "label": "Whether caller is with the person",
+      "rule": "Caller explains their position relative to the person.",
+      "easy": false
+    },
+    {
+      "id": "callback",
+      "label": "Fictional callback number",
+      "rule": "A usable callback number supplied by the caller. Confirm unclear digits.",
+      "easy": true
+    },
+    {
+      "id": "symptoms",
+      "label": "Relevant symptoms",
+      "rule": "Caller describes chest pain and at least one associated symptom.",
+      "easy": false
+    }
+  ],
+  "changes": [
+    {
+      "id": "arm-pain",
+      "afterCallerTurns": 4,
+      "message": "New scenario information: Sam now says the pain is also in the left arm. Tell the call handler when you can."
+    }
+  ],
+  "completion": {
+    "required": "Selected service matches scenario and required details communicated; closing statement heard."
+  },
+  "responderProtocol": {
+    "clinicalReviewStatus": "Awaiting clinician review",
+    "approvedFirstAid": [],
+    "behaviour": "Collect information only; no medical, rescue, crime-scene or firefighting instructions; never claim dispatch."
+  },
+  "assessment": {
+    "status": "Unvalidated descriptive practice observations",
+    "review": "AI observations require clinician review; do not infer impairment from pace, accent or transcription."
+  }
+}
